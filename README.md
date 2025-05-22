@@ -1,2 +1,2 @@
 # DealHunterSmart
-Shopping assistant AI
+Shopping AI Assistant
