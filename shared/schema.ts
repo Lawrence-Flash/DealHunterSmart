@@ -28,7 +28,7 @@ export const insertCategorySchema = createInsertSchema(categories).pick({
   icon: true,
 });
 
-// Product schema
+// Product schema with live verification metadata
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -38,6 +38,8 @@ export const products = pgTable("products", {
   brand: text("brand"),
   unit: text("unit"),
   features: text("features").array().notNull(),
+  isLiveVerified: boolean("isLiveVerified").default(true),
+  lastLiveSync: text("lastLiveSync"),
 });
 
 export const insertProductSchema = createInsertSchema(products).pick({
@@ -48,6 +50,8 @@ export const insertProductSchema = createInsertSchema(products).pick({
   brand: true,
   unit: true,
   features: true,
+  isLiveVerified: true,
+  lastLiveSync: true,
 });
 
 // Store schema with South African retail & loyalty specifics
@@ -62,6 +66,7 @@ export const stores = pgTable("stores", {
   deliverySpeed: text("deliverySpeed"), // e.g. "60 mins (Sixty60)", "Next-day", "2-3 days"
   productUrl: text("productUrl"),
   inStock: boolean("inStock").default(true),
+  lastVerified: text("lastVerified"),
 });
 
 export const insertStoreSchema = createInsertSchema(stores).pick({
@@ -74,6 +79,7 @@ export const insertStoreSchema = createInsertSchema(stores).pick({
   deliverySpeed: true,
   productUrl: true,
   inStock: true,
+  lastVerified: true,
 });
 
 // Types

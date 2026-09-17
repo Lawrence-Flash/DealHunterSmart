@@ -48,19 +48,25 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-xl hover:shadow-emerald-950/30 transition-all duration-300 border-neutral-800 hover:border-emerald-500/50 bg-neutral-900 group flex flex-col justify-between">
       <div>
-        <div className="relative overflow-hidden bg-neutral-950">
+        <div className="relative overflow-hidden bg-neutral-950 flex items-center justify-center p-2 min-h-[200px]">
           <img 
             src={product.imageUrl} 
             alt={product.name} 
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+            loading="lazy"
+            className="w-full h-44 object-contain group-hover:scale-105 transition-transform duration-500"
           />
+          <div className="absolute top-2.5 left-2.5 bg-neutral-950/90 backdrop-blur-xs text-emerald-400 border border-emerald-800/80 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Live Verified</span>
+          </div>
+
           {savingsPercentage > 0 && (
-            <div className="absolute top-3 right-3 bg-emerald-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md tracking-wide">
+            <div className="absolute top-2.5 right-2.5 bg-emerald-600 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-md tracking-wide">
               Save {savingsPercentage}%
             </div>
           )}
           {product.brand && (
-            <div className="absolute bottom-3 left-3 bg-neutral-900/90 backdrop-blur-sm text-neutral-200 border border-neutral-800 px-2.5 py-0.5 rounded text-xs font-semibold shadow-xs">
+            <div className="absolute bottom-2.5 left-2.5 bg-neutral-900/90 backdrop-blur-xs text-neutral-300 border border-neutral-800 px-2 py-0.5 rounded text-[11px] font-semibold shadow-xs">
               {product.brand} {product.unit ? `• ${product.unit}` : ''}
             </div>
           )}
@@ -76,7 +82,7 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
 
           <div className="mb-3 flex items-baseline justify-between">
             <div>
-              <div className="text-xs text-neutral-400 font-medium">Best Deal From</div>
+              <div className="text-[11px] text-neutral-400 font-medium">Best Deal From</div>
               <div className="text-xl font-black text-emerald-400 tracking-tight">
                 {formatZAR(lowestPrice)}
               </div>

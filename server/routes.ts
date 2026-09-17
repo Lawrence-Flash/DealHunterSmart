@@ -2,6 +2,7 @@
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { processAIChat } from "./aiAssistant";
+import { liveStoreScraper } from "./services/liveStoreScraper";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a router for API routes
@@ -107,6 +108,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error in /api/ai/chat:', error);
       res.status(500).json({ message: 'Failed to process AI chat request' });
+    }
+  });
+
+  // Live Store Scraper endpoints
+  apiRouter.get('/live-sync/status', (req: Request, res: Response) => {
+    res.json(liveStoreScraper.getStatus());
+  });
+
+  apiRouter.post('/live-sync/all', async (req: Request, res: Response) => {
+    try {
+      const results = await liveStoreScraper.syncAllLive();
+      res.json({
+        message: 'Live sync completed across all connected South African retailers',
+        totalProductsSynced: results.length,
+        results
+      });
+    } catch (error) {
+      console.error('Error in /api/live-sync/all:', error);
+      res.status(500).json({ message: 'Failed to complete live store synchronization' });
+    }
+  });
+
+  apiRouter.post('/live-sync/:productId', async (req: Request, res: Response) => {
+    try {
+      const productId = parseInt(req.params.productId);
+      const result = await liveStoreScraper.syncProductLive(productId);
+      if (!result) {
+        return res.status(404).json({ message: 'Product not found for live sync' });
+      }
+      res.json(result);
+    } catch (error) {
+      console.error(`Error in /api/live-sync/${req.params.productId}:`, error);
+      res.status(500).json({ message: 'Failed to sync product with live retailer catalogs' });
     }
   });
 

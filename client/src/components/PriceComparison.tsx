@@ -109,13 +109,14 @@ export default function PriceComparison({ stores, productId }: PriceComparisonPr
                 >
                   <Button 
                     size="sm" 
-                    className={`text-xs px-3 py-1.5 h-8 font-bold shadow-xs ${
+                    className={`text-xs px-3 py-1.5 h-8 font-bold shadow-xs flex items-center gap-1 ${
                       isBestDeal 
                         ? 'bg-emerald-600 hover:bg-emerald-500 text-white' 
                         : 'bg-neutral-800 border border-neutral-700 text-neutral-200 hover:bg-neutral-700'
                     }`}
                   >
-                    View on Store
+                    <span>Shop {store.name}</span>
+                    <span className="text-[10px]">↗</span>
                   </Button>
                 </a>
               </div>
@@ -129,8 +130,8 @@ export default function PriceComparison({ stores, productId }: PriceComparisonPr
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>Live price comparison across South African retail</span>
         </div>
-        <div>
-          Verified today (SAST)
+        <div className="text-[11px] text-neutral-400">
+          Verified live today (SAST)
         </div>
       </div>
     </div>

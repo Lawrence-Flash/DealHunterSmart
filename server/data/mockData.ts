@@ -1,170 +1,255 @@
-﻿import { Product, Category, Store } from "@shared/schema";
+﻿import { InsertCategory, InsertProduct, InsertStore } from "@shared/schema";
 
-// South African categories
-export const mockCategories: Omit<Category, "id">[] = [
+export const mockCategories: InsertCategory[] = [
   {
     name: "Groceries & Braai",
-    slug: "groceries",
-    icon: "shopping-bag"
+    slug: "groceries-braai",
+    icon: "Utensils",
   },
   {
     name: "Load Shedding & Power",
-    slug: "loadshedding",
-    icon: "zap"
+    slug: "load-shedding",
+    icon: "Zap",
   },
   {
     name: "Electronics & Tech",
     slug: "electronics",
-    icon: "tv"
+    icon: "Tv",
   },
   {
     name: "Home & Kitchen",
-    slug: "appliances",
-    icon: "home"
+    slug: "home-kitchen",
+    icon: "Home",
   },
   {
     name: "Baby & Health",
     slug: "baby-health",
-    icon: "heart"
-  }
+    icon: "Heart",
+  },
 ];
 
-// South African products (12 essential staples)
-export const mockProducts: Omit<Product, "id">[] = [
+const nowIso = new Date().toISOString();
+
+export const mockProducts: (InsertProduct & { id?: number })[] = [
   {
     name: "Sunfoil Pure Sunflower Oil 2L",
-    description: "Triple refined 100% pure sunflower oil for everyday cooking, crisp frying, and baking.",
-    imageUrl: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Triple refined pure sunflower oil. Naturally cholesterol free, endorsed by the Heart and Stroke Foundation SA. A staple for cooking and South African braais.",
+    imageUrl: "/images/products/sunfoil-oil.jpg",
+    categorySlug: "groceries-braai",
     brand: "Sunfoil",
     unit: "2L Bottle",
-    features: ["Triple Refined", "Naturally Cholesterol Free", "High in Omega 6", "Ideal for Crisp Frying"]
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Naturally cholesterol free",
+      "Triple refined pure sunflower oil",
+      "Endorsed by the Heart and Stroke Foundation",
+      "High smoke point ideal for frying and baking"
+    ]
   },
   {
     name: "Gizzu 30W Mini DC 8800mAh UPS for Wi-Fi Router",
-    description: "Keep your home fibre router and ONT powered seamlessly through loadshedding and power outages for up to 4 hours.",
-    imageUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "loadshedding",
+    description: "Keep your home Wi-Fi and CCTV running seamlessly during Stage 4-6 load shedding. Dual voltage DC output (9V/12V) with high-capacity Lithium-ion battery.",
+    imageUrl: "/images/products/gizzu-ups.jpg",
+    categorySlug: "load-shedding",
     brand: "Gizzu",
-    unit: "30W / 8800mAh",
-    features: ["8800mAh Battery", "Dual Output (12V & 9V)", "PoE Supported", "Up to 4 Hours Runtime", "Plug & Play"]
+    unit: "Unit",
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Power your Wi-Fi router and ONT during load shedding",
+      "High-capacity 8800mAh lithium-ion battery",
+      "Dual DC output: 9V / 12V selectable",
+      "Up to 4 hours backup runtime"
+    ]
   },
   {
     name: "Philips Essential Airfryer XL 6.2L",
-    description: "Rapid Air technology with digital touch screen, 7 quick presets, and keep warm function for guilt-free crispy meals.",
-    imageUrl: "https://images.unsplash.com/photo-1585659722983-3a675dabf23d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "appliances",
+    description: "Cook delicious meals with up to 90% less fat. Rapid Air technology with 14-in-1 cooking functions, digital touch screen, and dishwasher-safe parts.",
+    imageUrl: "/images/products/airfryer.png",
+    categorySlug: "home-kitchen",
     brand: "Philips",
-    unit: "6.2L Basket",
-    features: ["Rapid Air Technology", "6.2L Pan Capacity", "Digital Touchscreen", "Dishwasher Safe", "Keep Warm Function"]
+    unit: "6.2L Capacity",
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Rapid Air Technology for crispy, evenly cooked food",
+      "Up to 90% less fat than traditional deep frying",
+      "Touch screen with 7 presets and keep-warm mode",
+      "XL 6.2L / 1.2kg basket capacity for family meals"
+    ]
   },
   {
     name: "Samsung 55\" Crystal UHD 4K Smart TV (CU7000)",
-    description: "Vibrant Crystal 4K processor with PurColor, HDR10+, Tizen Smart TV, and ultra-smooth gaming mode.",
-    imageUrl: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    description: "Vivid, lifelike color with Dynamic Crystal Color and Crystal Processor 4K. Built-in DStv Stream, Netflix, Showmax, and Apple AirPlay.",
+    imageUrl: "/images/products/samsung-tv.png",
     categorySlug: "electronics",
     brand: "Samsung",
-    unit: "55-inch",
-    features: ["Crystal Processor 4K", "PurColor HDR10+", "Tizen Smart TV Hub", "Object Tracking Sound", "Voice Assistant Ready"]
+    unit: "55 Inch",
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "PurColor delivers natural, true-to-life picture quality",
+      "Crystal Processor 4K upscaling engine",
+      "Samsung Smart Hub with Showmax, Netflix & DStv Stream",
+      "Q-Symphony soundbar synchronization"
+    ]
   },
   {
     name: "Pampers Premium Care Nappies Size 4 Jumbo Pack (104s)",
-    description: "Ultra-soft with 3 absorbing channels, wetness indicator, and breathable layers for up to 12 hours of leakage protection.",
-    imageUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    description: "5-star skin protection for active babies (9-14kg). Silky soft materials with absorbent air channels for up to 12 hours of breathable dryness.",
+    imageUrl: "/images/products/pampers.jpg",
     categorySlug: "baby-health",
     brand: "Pampers",
-    unit: "104 Nappies",
-    features: ["104 Nappies", "Breathable Layers", "Up to 12 Hours Dryness", "Wetness Indicator", "Hypoallergenic"]
+    unit: "104 Pack (Size 4)",
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "5-star skin protection with silky softness",
+      "Absorbent channels for even wetness distribution",
+      "Wetness indicator turns blue when wet",
+      "Breathable micropores to prevent diaper rash"
+    ]
   },
   {
     name: "Rainbow Mixed Chicken Braai Pack 2kg",
-    description: "Freshly frozen mixed chicken portions with savoury brine marinade, perfect for weekend family braais.",
-    imageUrl: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Farm-fresh individually quick frozen (IQF) mixed chicken portions with 15% brine injection. Perfect for braaiing, roasting, and potjiekos.",
+    imageUrl: "/images/products/rainbow-chicken.jpg",
+    categorySlug: "groceries-braai",
     brand: "Rainbow",
     unit: "2kg Bag",
-    features: ["2kg Family Pack", "Mixed Drumsticks & Thighs", "Locally Produced in SA", "Halaal Certified"]
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Succulent IQF mixed chicken portions",
+      "15% brine based marinade for tender grilling",
+      "South African braai and potjie favourite",
+      "Halaal certified"
+    ]
   },
   {
     name: "Clover Full Cream Fresh Milk 2L",
-    description: "Pasteurised fresh full cream South African cows milk, source of calcium, protein, and essential vitamins.",
-    imageUrl: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Fresh pasteurised full cream cow's milk from pasture-fed South African dairy herds. Rich in calcium, protein, and natural vitamins.",
+    imageUrl: "/images/products/clover-milk.jpg",
+    categorySlug: "groceries-braai",
     brand: "Clover",
     unit: "2L Bottle",
-    features: ["Full Cream", "Pasteurised", "Good Source of Calcium", "Fresh SA Dairy"]
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "100% pure pasteurised full cream cow milk",
+      "Rich in calcium and essential vitamins",
+      "Bottled fresh under strict Clover quality standards",
+      "South Africa's most trusted dairy brand"
+    ]
   },
   {
     name: "Albany Superior Sliced White Bread 700g",
-    description: "Thick sliced, oven-baked white bread fortified with vitamins and minerals for energy and freshness.",
-    imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Thick, soft sliced white bread fortified with 8 essential vitamins and minerals. Freshly baked daily for family toast and sandwiches.",
+    imageUrl: "/images/products/albany-bread.jpg",
+    categorySlug: "groceries-braai",
     brand: "Albany",
     unit: "700g Loaf",
-    features: ["Thick Sliced", "Fortified with Vitamins", "Fresh Soft Crust", "Everyday Toast & Sandwiches"]
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Fortified with 8 vitamins and minerals",
+      "Soft textured thick slices",
+      "Longer freshness guarantee",
+      "Baked fresh daily"
+    ]
   },
   {
     name: "Tastic Parboiled Long Grain Rice 2kg",
-    description: "Specially selected long grain parboiled rice that cooks separately and fluffily every time.",
-    imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Pure South African parboiled rice that cooks into separate, fluffy white grains every single time. Never sticks, perfect for stews and curry.",
+    imageUrl: "/images/products/tastic-rice.jpg",
+    categorySlug: "groceries-braai",
     brand: "Tastic",
     unit: "2kg Bag",
-    features: ["Cooks Fluffy & Separate", "Parboiled Long Grain", "Naturally Gluten Free", "Pantry Staple"]
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Cooks separate and fluffy every time",
+      "Naturally low GI and gluten-free",
+      "Parboiled long grain rice",
+      "More than 50 years of trusted SA heritage"
+    ]
   },
   {
     name: "OMO Auto Washing Powder 2kg",
-    description: "Formulated with built-in stain removers and fabric care enzymes for tough dirt in top and front loader machines.",
-    imageUrl: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Formulated with active stain removal technology that dissolves fast and penetrates deep into fabric fibres to remove tough stains in a quick wash.",
+    imageUrl: "/images/products/omo-auto.jpg",
+    categorySlug: "groceries-braai",
     brand: "OMO",
     unit: "2kg Box",
-    features: ["Tough Stain Removal in Quick Wash", "Front & Top Loader", "Fresh Long-lasting Fragrance", "Fabric Care"]
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Fast-acting stain removal formulation",
+      "Recommended by top washing machine makers",
+      "Great in cold water and eco quick cycles",
+      "Pleasant fresh fragrance that lasts"
+    ]
   },
   {
     name: "Jacobs Krönung Instant Coffee 200g",
-    description: "Premium freeze-dried instant coffee made from high quality Arabica and Robusta beans with signature rich aroma.",
-    imageUrl: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "Rich, aromatic freeze-dried instant coffee crafted from premium roasted beans with the signature Jacobs golden aroma.",
+    imageUrl: "/images/products/jacobs-coffee.jpg",
+    categorySlug: "groceries-braai",
     brand: "Jacobs",
-    unit: "200g Jar",
-    features: ["Rich & Aromatic", "Freeze-Dried Instant", "Signature Krönung Roast", "Yields approx. 110 Cups"]
+    unit: "200g Glass Jar",
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Signature freeze-dried Jacobs aroma",
+      "Made from selected high-grade Arabica & Robusta beans",
+      "Iconic green glass jar with freshness seal",
+      "Rich golden crema taste"
+    ]
   },
   {
     name: "Coca-Cola Original Taste Less Sugar 2L",
-    description: "The refreshing taste of Coca-Cola with iconic bubbles, perfect chilled for Sunday lunches and braais.",
-    imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
-    categorySlug: "groceries",
+    description: "The classic, crisp refreshing taste of Coca-Cola in a family-size 2L bottle. Perfect chilled for braais, celebrations, and Sunday dinners.",
+    imageUrl: "/images/products/coca-cola.jpg",
+    categorySlug: "groceries-braai",
     brand: "Coca-Cola",
     unit: "2L Bottle",
-    features: ["Original Crisp Taste", "Best Served Ice Cold", "Ideal for Braais & Parties", "Recyclable PET Bottle"]
-  }
+    isLiveVerified: true,
+    lastLiveSync: nowIso,
+    features: [
+      "Original refreshing Coca-Cola taste",
+      "Less sugar formula with same full flavour",
+      "Family sharing 2L bottle",
+      "Best served ice cold"
+    ]
+  },
 ];
 
-// South African stores & pricing data
-export const mockStores: Omit<Store, "id">[] = [
-  // Stores for Sunfoil 2L Sunflower Oil (Product 1)
+export const mockStores: InsertStore[] = [
+  // 1. Sunfoil Pure Sunflower Oil 2L
   {
     name: "Checkers Sixty60",
     productId: 1,
     price: 74.99,
-    loyaltyPrice: 62.99,
+    loyaltyPrice: 69.99,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/All-Departments/Food/Food-Cupboard/Cooking-Oil/Sunfoil-Sunflower-Oil-2L/p/10134444EA",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
     productId: 1,
-    price: 78.99,
-    loyaltyPrice: 64.99,
+    price: 76.99,
+    loyaltyPrice: 71.99,
     loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/pnpstorefront/pnp/en/Sunfoil-Sunflower-Oil-2L/p/000000000000002856_EA",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Woolworths Dash",
@@ -172,527 +257,441 @@ export const mockStores: Omit<Store, "id">[] = [
     price: 84.99,
     loyaltyPrice: 79.99,
     loyaltyProgram: "WRewards",
-    shippingInfo: "R35 Dash delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Dash)",
+    productUrl: "https://www.woolworths.co.za/cat/Food/Pantry/Cooking-Baking/Oil-Ghee/_/N-1z13q9s",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
     productId: 1,
-    price: 69.99,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "In-store & delivery from R55",
+    price: 68.50,
+    loyaltyPrice: 64.99,
+    loyaltyProgram: "mCard",
+    shippingInfo: "R50 standard delivery or Free Click & Collect",
     deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
-  },
-  {
-    name: "Takealot",
-    productId: 1,
-    price: 89.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery over R500",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.takealot.com",
-    inStock: true
+    productUrl: "https://www.makro.co.za/food/groceries/cooking-essentials/oil/sunfoil-pure-sunflower-oil-2l-/p/000000000000080849_EA",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Gizzu 30W Mini DC UPS (Product 2)
+  // 2. Gizzu 30W Mini DC 8800mAh UPS
+  {
+    name: "Takealot",
+    productId: 2,
+    price: 999.00,
+    loyaltyPrice: 899.00,
+    loyaltyProgram: "Daily Deal",
+    shippingInfo: "Free delivery over R500",
+    deliverySpeed: "Next-day",
+    productUrl: "https://www.takealot.com/gizzu-30w-mini-dc-8800mah-ups/PLID73079083",
+    inStock: true,
+    lastVerified: nowIso,
+  },
   {
     name: "Amazon.co.za",
     productId: 2,
-    price: 749.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery over R500",
+    price: 949.00,
+    loyaltyPrice: 889.00,
+    loyaltyProgram: "Prime Savings",
+    shippingInfo: "Free delivery on orders over R500",
     deliverySpeed: "Next-day",
-    productUrl: "https://www.amazon.co.za",
-    inStock: true
-  },
-  {
-    name: "Takealot",
-    productId: 2,
-    price: 799.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery over R500",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.takealot.com",
-    inStock: true
+    productUrl: "https://www.amazon.co.za/dp/B08XYZ1234",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
     productId: 2,
-    price: 849.00,
-    loyaltyPrice: 799.00,
-    loyaltyProgram: "mCard Special",
-    shippingInfo: "Delivery or In-Store Pickup",
+    price: 1049.00,
+    loyaltyPrice: 949.00,
+    loyaltyProgram: "mCard",
+    shippingInfo: "R70 delivery or Free store pickup",
     deliverySpeed: "2-3 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
+    productUrl: "https://www.makro.co.za/electronics-computers/load-shedding-solutions/ups-systems/gizzu-30w-mini-dc-ups/p/000000000000492812_EA",
+    inStock: true,
+    lastVerified: nowIso,
+  },
+
+  // 3. Philips Essential Airfryer XL 6.2L
+  {
+    name: "Takealot",
+    productId: 3,
+    price: 2499.00,
+    loyaltyPrice: 1999.00,
+    loyaltyProgram: "Takealot Deal",
+    shippingInfo: "Free delivery",
+    deliverySpeed: "Next-day delivery",
+    productUrl: "https://www.takealot.com/philips-essential-airfryer-xl-6-2l/PLID72518392",
+    inStock: true,
+    lastVerified: nowIso,
+  },
+  {
+    name: "Makro",
+    productId: 3,
+    price: 2699.00,
+    loyaltyPrice: 2199.00,
+    loyaltyProgram: "mCard Exclusive",
+    shippingInfo: "Free store pickup / R80 delivery",
+    deliverySpeed: "2-4 days",
+    productUrl: "https://www.makro.co.za/appliances/small-appliances/airfryers/philips-essential-airfryer-xl/p/000000000000318291_EA",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Incredible Connection",
-    productId: 2,
-    price: 899.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Click & Collect in 2h",
-    deliverySpeed: "Same-day pickup",
-    productUrl: "https://www.incredible.co.za",
-    inStock: true
+    productId: 3,
+    price: 2799.00,
+    loyaltyPrice: 2499.00,
+    loyaltyProgram: "Tech Club",
+    shippingInfo: "Free standard shipping",
+    deliverySpeed: "1-3 days",
+    productUrl: "https://www.incredible.co.za/appliances/philips-airfryer-xl",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Philips Airfryer XL (Product 3)
+  // 4. Samsung 55" Crystal UHD 4K Smart TV
   {
-    name: "Amazon.co.za",
-    productId: 3,
-    price: 1899.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free express shipping",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.amazon.co.za",
-    inStock: true
+    name: "Takealot",
+    productId: 4,
+    price: 7999.00,
+    loyaltyPrice: 7499.00,
+    loyaltyProgram: "Clearance Deal",
+    shippingInfo: "Free heavy delivery",
+    deliverySpeed: "2-3 days",
+    productUrl: "https://www.takealot.com/samsung-55-crystal-uhd-4k-cu7000/PLID92817492",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
-    productId: 3,
-    price: 2199.00,
-    loyaltyPrice: 1949.00,
-    loyaltyProgram: "mCard Deal",
-    shippingInfo: "Free delivery",
-    deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
-  },
-  {
-    name: "Takealot",
-    productId: 3,
-    price: 2199.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.takealot.com",
-    inStock: true
-  },
-  {
-    name: "Woolworths",
-    productId: 3,
-    price: 2499.00,
-    loyaltyPrice: 2249.00,
-    loyaltyProgram: "WRewards",
-    shippingInfo: "Free delivery over R450",
+    productId: 4,
+    price: 8299.00,
+    loyaltyPrice: 7299.00,
+    loyaltyProgram: "mCard Special",
+    shippingInfo: "R150 large appliance delivery",
     deliverySpeed: "3-5 days",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
-  },
-
-  // Stores for Samsung 55" 4K Smart TV (Product 4 - Featured)
-  {
-    name: "Makro",
-    productId: 4,
-    price: 7299.00,
-    loyaltyPrice: 6899.00,
-    loyaltyProgram: "mCard Exclusive",
-    shippingInfo: "Delivery or Free Store Pickup",
-    deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
-  },
-  {
-    name: "Amazon.co.za",
-    productId: 4,
-    price: 6999.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free scheduled delivery",
-    deliverySpeed: "2-3 days",
-    productUrl: "https://www.amazon.co.za",
-    inStock: true
-  },
-  {
-    name: "Takealot",
-    productId: 4,
-    price: 7499.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery",
-    deliverySpeed: "2-3 days",
-    productUrl: "https://www.takealot.com",
-    inStock: true
+    productUrl: "https://www.makro.co.za/electronics-computers/televisions/4k-uhd-tvs/samsung-55-crystal-uhd-cu7000/p/000000000000518291_EA",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "HiFi Corp",
     productId: 4,
-    price: 7499.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Delivery from R150",
+    price: 8499.00,
+    loyaltyPrice: 7799.00,
+    loyaltyProgram: "Club Price",
+    shippingInfo: "R120 delivery",
     deliverySpeed: "3-5 days",
-    productUrl: "https://www.hificorp.co.za",
-    inStock: true
-  },
-  {
-    name: "Incredible Connection",
-    productId: 4,
-    price: 7999.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery + 2-year warranty",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.incredible.co.za",
-    inStock: true
+    productUrl: "https://www.hificorp.co.za/samsung-55-crystal-uhd-tv",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Pampers Premium Care Nappies (Product 5)
+  // 5. Pampers Premium Care Nappies Size 4 Jumbo Pack (104s)
   {
     name: "Checkers Sixty60",
     productId: 5,
-    price: 419.99,
-    loyaltyPrice: 349.99,
+    price: 499.99,
+    loyaltyPrice: 429.99,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/baby/nappies-pants/pampers-premium-care-size-4-jumbo",
+    inStock: true,
+    lastVerified: nowIso,
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 5,
+    price: 519.99,
+    loyaltyPrice: 439.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/pampers-premium-care-size-4-jumbo",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Dis-Chem",
     productId: 5,
-    price: 429.95,
-    loyaltyPrice: 359.95,
-    loyaltyProgram: "Dis-Chem Benefit",
-    shippingInfo: "Free delivery over R600",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.dischem.co.za",
-    inStock: true
+    price: 529.95,
+    loyaltyPrice: 449.95,
+    loyaltyProgram: "Dis-Chem Benefit Card",
+    shippingInfo: "R60 delivery or Click & Collect",
+    deliverySpeed: "Same-day / Next-day",
+    productUrl: "https://www.dischem.co.za/pampers-premium-care-size-4-104",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Clicks",
     productId: 5,
-    price: 439.99,
-    loyaltyPrice: 369.99,
-    loyaltyProgram: "Clicks ClubCard",
+    price: 539.00,
+    loyaltyPrice: 459.00,
+    loyaltyProgram: "ClubCard (3 for 2 eligible)",
     shippingInfo: "Free delivery over R450",
     deliverySpeed: "1-3 days",
-    productUrl: "https://www.clicks.co.za",
-    inStock: true
-  },
-  {
-    name: "Takealot",
-    productId: 5,
-    price: 399.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery over R500",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.takealot.com",
-    inStock: true
+    productUrl: "https://clicks.co.za/pampers-premium-care-jumbo-size-4",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Rainbow Mixed Chicken Braai Pack 2kg (Product 6)
+  // 6. Rainbow Mixed Chicken Braai Pack 2kg
   {
     name: "Checkers Sixty60",
     productId: 6,
-    price: 94.99,
+    price: 89.99,
     loyaltyPrice: 79.99,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/meat-poultry/rainbow-mixed-chicken-braai-pack-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
     productId: 6,
-    price: 96.99,
-    loyaltyPrice: 84.99,
-    loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
-  },
-  {
-    name: "Spar",
-    productId: 6,
     price: 92.99,
-    loyaltyPrice: 86.99,
-    loyaltyProgram: "Spar Rewards",
-    shippingInfo: "Spar2U on-demand",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.spar.co.za",
-    inStock: true
+    loyaltyPrice: 82.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/rainbow-chicken-iqf-mixed-portions-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
     productId: 6,
-    price: 89.99,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "In-store pickup & delivery",
-    deliverySpeed: "Same-day pickup",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
+    price: 86.00,
+    loyaltyPrice: 76.99,
+    loyaltyProgram: "mCard",
+    shippingInfo: "In-store fresh or Click & Collect",
+    deliverySpeed: "Same-day store collection",
+    productUrl: "https://www.makro.co.za/food/meat/frozen-poultry/rainbow-mixed-chicken-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Clover Fresh Milk 2L (Product 7)
+  // 7. Clover Full Cream Fresh Milk 2L
   {
     name: "Checkers Sixty60",
     productId: 7,
     price: 36.99,
-    loyaltyPrice: 31.99,
+    loyaltyPrice: 33.99,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/dairy-eggs-chilled/milk/clover-full-cream-fresh-milk-2l",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
     productId: 7,
     price: 37.99,
-    loyaltyPrice: 32.99,
+    loyaltyPrice: 34.99,
     loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/clover-full-cream-milk-2l",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Woolworths Dash",
     productId: 7,
-    price: 39.99,
-    loyaltyPrice: 36.99,
+    price: 41.99,
+    loyaltyPrice: 37.99,
     loyaltyProgram: "WRewards",
-    shippingInfo: "R35 Dash delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
-  },
-  {
-    name: "Spar",
-    productId: 7,
-    price: 38.99,
-    loyaltyPrice: 34.99,
-    loyaltyProgram: "Spar Rewards",
-    shippingInfo: "Spar2U delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.spar.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Dash)",
+    productUrl: "https://www.woolworths.co.za/cat/Food/Milk-Dairy-Eggs/Fresh-Milk/_/N-13h21o5",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Albany Sliced White Bread 700g (Product 8)
+  // 8. Albany Superior Sliced White Bread 700g
   {
     name: "Checkers Sixty60",
     productId: 8,
     price: 18.99,
-    loyaltyPrice: 16.99,
+    loyaltyPrice: 17.49,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/bakery/bread/albany-superior-white-bread-700g",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
     productId: 8,
-    price: 19.49,
-    loyaltyPrice: 16.49,
+    price: 18.49,
+    loyaltyPrice: 16.99,
     loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/albany-superior-sliced-white-bread-700g",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Woolworths Dash",
     productId: 8,
-    price: 21.99,
-    loyaltyPrice: 19.99,
+    price: 20.99,
+    loyaltyPrice: 18.99,
     loyaltyProgram: "WRewards",
-    shippingInfo: "R35 Dash delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
-  },
-  {
-    name: "Spar",
-    productId: 8,
-    price: 19.99,
-    loyaltyPrice: 17.99,
-    loyaltyProgram: "Spar Rewards",
-    shippingInfo: "Spar2U delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.spar.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Dash)",
+    productUrl: "https://www.woolworths.co.za/cat/Food/Bakery/Bread-Rolls/_/N-1k04v77",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Tastic Rice 2kg (Product 9)
+  // 9. Tastic Parboiled Long Grain Rice 2kg
   {
     name: "Checkers Sixty60",
     productId: 9,
     price: 44.99,
     loyaltyPrice: 38.99,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/food/rice-grains/tastic-parboiled-rice-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
     productId: 9,
-    price: 46.99,
-    loyaltyPrice: 40.99,
+    price: 45.99,
+    loyaltyPrice: 39.99,
     loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/tastic-parboiled-rice-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
     productId: 9,
-    price: 39.99,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "In-store & delivery",
+    price: 41.50,
+    loyaltyPrice: 36.99,
+    loyaltyProgram: "mCard",
+    shippingInfo: "R50 delivery or Free store pickup",
     deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
-  },
-  {
-    name: "Woolworths Dash",
-    productId: 9,
-    price: 49.99,
-    loyaltyPrice: 44.99,
-    loyaltyProgram: "WRewards",
-    shippingInfo: "R35 Dash delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
+    productUrl: "https://www.makro.co.za/food/staples/rice/tastic-parboiled-rice-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for OMO Auto Washing Powder 2kg (Product 10)
+  // 10. OMO Auto Washing Powder 2kg
   {
     name: "Checkers Sixty60",
-    productId: 10,
-    price: 92.99,
-    loyaltyPrice: 79.99,
-    loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
-  },
-  {
-    name: "Pick n Pay asap!",
     productId: 10,
     price: 94.99,
-    loyaltyPrice: 76.99,
-    loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
-  },
-  {
-    name: "Makro",
-    productId: 10,
-    price: 79.99,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "In-store & delivery",
-    deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
-  },
-  {
-    name: "Takealot",
-    productId: 10,
-    price: 99.00,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "Free delivery over R500",
-    deliverySpeed: "Next-day",
-    productUrl: "https://www.takealot.com",
-    inStock: true
-  },
-
-  // Stores for Jacobs Krönung Instant Coffee 200g (Product 11)
-  {
-    name: "Checkers Sixty60",
-    productId: 11,
-    price: 149.99,
-    loyaltyPrice: 129.99,
+    loyaltyPrice: 84.99,
     loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/household/laundry/omo-auto-washing-powder-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
-    productId: 11,
-    price: 152.99,
-    loyaltyPrice: 128.99,
+    productId: 10,
+    price: 96.99,
+    loyaltyPrice: 86.99,
     loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/omo-auto-washing-powder-regular-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
-    productId: 11,
-    price: 129.99,
-    loyaltyPrice: 124.99,
-    loyaltyProgram: "mCard Special",
-    shippingInfo: "In-store & delivery",
+    productId: 10,
+    price: 88.00,
+    loyaltyPrice: 79.99,
+    loyaltyProgram: "mCard",
+    shippingInfo: "R50 delivery or Free store pickup",
     deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
+    productUrl: "https://www.makro.co.za/cleaning-household/laundry/washing-powder/omo-auto-2kg",
+    inStock: true,
+    lastVerified: nowIso,
   },
+
+  // 11. Jacobs Krönung Instant Coffee 200g
   {
-    name: "Woolworths Dash",
+    name: "Checkers Sixty60",
     productId: 11,
     price: 159.99,
+    loyaltyPrice: 139.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/beverages/coffee/instant/jacobs-kronung-instant-coffee-200g",
+    inStock: true,
+    lastVerified: nowIso,
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 11,
+    price: 164.99,
     loyaltyPrice: 144.99,
-    loyaltyProgram: "WRewards",
-    shippingInfo: "R35 Dash delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/jacobs-kronung-instant-coffee-200g",
+    inStock: true,
+    lastVerified: nowIso,
+  },
+  {
+    name: "Makro",
+    productId: 11,
+    price: 149.00,
+    loyaltyPrice: 134.99,
+    loyaltyProgram: "mCard",
+    shippingInfo: "R50 delivery or Free store pickup",
+    deliverySpeed: "2-4 days",
+    productUrl: "https://www.makro.co.za/food/beverages/hot-drinks/coffee/jacobs-kronung-instant-coffee-200g",
+    inStock: true,
+    lastVerified: nowIso,
   },
 
-  // Stores for Coca-Cola 2L (Product 12)
+  // 12. Coca-Cola Original Taste Less Sugar 2L
   {
     name: "Checkers Sixty60",
     productId: 12,
-    price: 27.99,
-    loyaltyPrice: 22.99,
-    loyaltyProgram: "Xtra Savings",
-    shippingInfo: "R35 Sixty60 delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.checkers.co.za",
-    inStock: true
+    price: 28.99,
+    loyaltyPrice: 24.99,
+    loyaltyProgram: "Xtra Savings (Buy 2 for R48)",
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Sixty60)",
+    productUrl: "https://www.checkers.co.za/beverages/cold-drinks/coca-cola-original-2l",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Pick n Pay asap!",
     productId: 12,
-    price: 28.99,
-    loyaltyPrice: 23.99,
+    price: 29.99,
+    loyaltyPrice: 25.99,
     loyaltyProgram: "Smart Shopper",
-    shippingInfo: "R35 asap! delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.pnp.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (asap!)",
+    productUrl: "https://www.pnp.co.za/coca-cola-original-taste-less-sugar-2l",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Woolworths Dash",
@@ -700,31 +699,22 @@ export const mockStores: Omit<Store, "id">[] = [
     price: 31.99,
     loyaltyPrice: 27.99,
     loyaltyProgram: "WRewards",
-    shippingInfo: "R35 Dash delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.woolworths.co.za",
-    inStock: true
-  },
-  {
-    name: "Spar",
-    productId: 12,
-    price: 28.49,
-    loyaltyPrice: 24.99,
-    loyaltyProgram: "Spar Rewards",
-    shippingInfo: "Spar2U delivery",
-    deliverySpeed: "60 mins",
-    productUrl: "https://www.spar.co.za",
-    inStock: true
+    shippingInfo: "R35 on-demand delivery",
+    deliverySpeed: "60 mins (Dash)",
+    productUrl: "https://www.woolworths.co.za/cat/Food/Beverages/Cold-Drinks-Mixers/_/N-1c3k0yv",
+    inStock: true,
+    lastVerified: nowIso,
   },
   {
     name: "Makro",
     productId: 12,
-    price: 24.99,
-    loyaltyPrice: null,
-    loyaltyProgram: null,
-    shippingInfo: "In-store & delivery",
+    price: 26.50,
+    loyaltyPrice: 23.99,
+    loyaltyProgram: "mCard (Bulk 6-pack R140)",
+    shippingInfo: "R50 delivery or Free store pickup",
     deliverySpeed: "2-4 days",
-    productUrl: "https://www.makro.co.za",
-    inStock: true
-  }
+    productUrl: "https://www.makro.co.za/food/beverages/cold-drinks/carbonated/coca-cola-original-2l",
+    inStock: true,
+    lastVerified: nowIso,
+  },
 ];

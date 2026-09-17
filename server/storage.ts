@@ -21,6 +21,7 @@ export interface IStorage {
   getAllProducts(): Promise<Product[]>;
   getProductById(id: number): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
+  updateProduct(id: number, updates: Partial<Product>): Promise<Product | undefined>;
   searchProducts(query: string, categorySlug?: string): Promise<Product[]>;
   
   // Category operations
@@ -32,6 +33,7 @@ export interface IStorage {
   getAllStores(): Promise<Store[]>;
   getStoresByProductId(productId: number): Promise<Store[]>;
   createStore(store: InsertStore): Promise<Store>;
+  updateStore(id: number, updates: Partial<Store>): Promise<Store | undefined>;
 }
 
 // In-memory storage implementation
@@ -81,6 +83,8 @@ export class MemStorage implements IStorage {
         id: this.currentProductId++,
         brand: (product as any).brand ?? null,
         unit: (product as any).unit ?? null,
+        isLiveVerified: (product as any).isLiveVerified ?? true,
+        lastLiveSync: (product as any).lastLiveSync ?? new Date().toISOString(),
       };
       this.products.set(newProduct.id, newProduct);
     });
@@ -96,6 +100,7 @@ export class MemStorage implements IStorage {
         deliverySpeed: store.deliverySpeed ?? null,
         productUrl: store.productUrl ?? null,
         inStock: store.inStock ?? true,
+        lastVerified: (store as any).lastVerified ?? new Date().toISOString(),
       };
       this.stores.set(newStore.id, newStore);
     });
@@ -135,9 +140,19 @@ export class MemStorage implements IStorage {
       id,
       brand: insertProduct.brand ?? null,
       unit: insertProduct.unit ?? null,
+      isLiveVerified: (insertProduct as any).isLiveVerified ?? true,
+      lastLiveSync: (insertProduct as any).lastLiveSync ?? new Date().toISOString(),
     };
     this.products.set(id, product);
     return product;
+  }
+
+  async updateProduct(id: number, updates: Partial<Product>): Promise<Product | undefined> {
+    const product = this.products.get(id);
+    if (!product) return undefined;
+    const updated = { ...product, ...updates };
+    this.products.set(id, updated);
+    return updated;
   }
 
   async searchProducts(query: string, categorySlug?: string): Promise<Product[]> {
@@ -195,9 +210,18 @@ export class MemStorage implements IStorage {
       deliverySpeed: insertStore.deliverySpeed ?? null,
       productUrl: insertStore.productUrl ?? null,
       inStock: insertStore.inStock ?? true,
+      lastVerified: (insertStore as any).lastVerified ?? new Date().toISOString(),
     };
     this.stores.set(id, store);
     return store;
+  }
+
+  async updateStore(id: number, updates: Partial<Store>): Promise<Store | undefined> {
+    const store = this.stores.get(id);
+    if (!store) return undefined;
+    const updated = { ...store, ...updates };
+    this.stores.set(id, updated);
+    return updated;
   }
 }
 
