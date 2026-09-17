@@ -1,4 +1,4 @@
-import { 
+﻿import { 
   User, 
   InsertUser, 
   Category, 
@@ -12,7 +12,7 @@ import { mockProducts, mockCategories, mockStores } from "./data/mockData";
 
 // Interface for storage operations
 export interface IStorage {
-  // User operations (from template)
+  // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
@@ -68,7 +68,8 @@ export class MemStorage implements IStorage {
     mockCategories.forEach(category => {
       const newCategory: Category = {
         ...category,
-        id: this.currentCategoryId++
+        id: this.currentCategoryId++,
+        icon: (category as any).icon ?? null,
       };
       this.categories.set(newCategory.slug, newCategory);
     });
@@ -77,7 +78,9 @@ export class MemStorage implements IStorage {
     mockProducts.forEach(product => {
       const newProduct: Product = {
         ...product,
-        id: this.currentProductId++
+        id: this.currentProductId++,
+        brand: (product as any).brand ?? null,
+        unit: (product as any).unit ?? null,
       };
       this.products.set(newProduct.id, newProduct);
     });
@@ -86,13 +89,19 @@ export class MemStorage implements IStorage {
     mockStores.forEach(store => {
       const newStore: Store = {
         ...store,
-        id: this.currentStoreId++
+        id: this.currentStoreId++,
+        loyaltyPrice: store.loyaltyPrice ?? null,
+        loyaltyProgram: store.loyaltyProgram ?? null,
+        shippingInfo: store.shippingInfo ?? null,
+        deliverySpeed: store.deliverySpeed ?? null,
+        productUrl: store.productUrl ?? null,
+        inStock: store.inStock ?? true,
       };
       this.stores.set(newStore.id, newStore);
     });
   }
 
-  // User methods (from template)
+  // User methods
   async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
   }
@@ -121,20 +130,24 @@ export class MemStorage implements IStorage {
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const id = this.currentProductId++;
-    const product: Product = { ...insertProduct, id };
+    const product: Product = { 
+      ...insertProduct, 
+      id,
+      brand: insertProduct.brand ?? null,
+      unit: insertProduct.unit ?? null,
+    };
     this.products.set(id, product);
     return product;
   }
 
   async searchProducts(query: string, categorySlug?: string): Promise<Product[]> {
     return Array.from(this.products.values()).filter(product => {
-      // Filter by category if provided
       const categoryMatch = !categorySlug || product.categorySlug === categorySlug;
-      
-      // Filter by search query if provided
+      const q = query.toLowerCase();
       const queryMatch = !query || 
-        product.name.toLowerCase().includes(query.toLowerCase()) ||
-        product.description.toLowerCase().includes(query.toLowerCase());
+        product.name.toLowerCase().includes(q) ||
+        product.description.toLowerCase().includes(q) ||
+        (product.brand && product.brand.toLowerCase().includes(q));
       
       return categoryMatch && queryMatch;
     });
@@ -151,7 +164,11 @@ export class MemStorage implements IStorage {
 
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
     const id = this.currentCategoryId++;
-    const category: Category = { ...insertCategory, id };
+    const category: Category = { 
+      ...insertCategory, 
+      id,
+      icon: insertCategory.icon ?? null,
+    };
     this.categories.set(category.slug, category);
     return category;
   }
@@ -172,12 +189,17 @@ export class MemStorage implements IStorage {
     const store: Store = { 
       ...insertStore, 
       id,
-      shippingInfo: insertStore.shippingInfo || null 
+      loyaltyPrice: insertStore.loyaltyPrice ?? null,
+      loyaltyProgram: insertStore.loyaltyProgram ?? null,
+      shippingInfo: insertStore.shippingInfo ?? null,
+      deliverySpeed: insertStore.deliverySpeed ?? null,
+      productUrl: insertStore.productUrl ?? null,
+      inStock: insertStore.inStock ?? true,
     };
     this.stores.set(id, store);
     return store;
   }
 }
 
-// Export a singleton instance
+// Export singleton
 export const storage = new MemStorage();
