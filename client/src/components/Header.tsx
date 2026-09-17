@@ -1,13 +1,17 @@
 ﻿import { Link } from "wouter";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { PriceTag3Fill, HeartLine, Notification3Line } from "@/lib/icons";
+import { HeartLine } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 
 export default function Header() {
   const isMobile = useIsMobile();
 
+  const handleOpenAI = () => {
+    window.dispatchEvent(new CustomEvent('open-dealhunter-ai'));
+  };
+
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 shadow-xs">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200/80 shadow-xs">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between max-w-6xl">
         <div className="flex items-center space-x-3">
           <Link href="/" className="flex items-center group">
@@ -41,7 +45,16 @@ export default function Header() {
           </Link>
         </nav>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
+          {/* AI Deal Assistant Header Pill */}
+          <button
+            onClick={handleOpenAI}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-extrabold transition shadow-2xs cursor-pointer group"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>🤖 AI Assistant</span>
+          </button>
+
           <Link href="/search">
             <Button variant="ghost" size="icon" className="text-neutral-600 hover:text-emerald-600 rounded-lg">
               <HeartLine className="h-5 w-5" />

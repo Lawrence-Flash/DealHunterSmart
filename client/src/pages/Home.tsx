@@ -43,6 +43,10 @@ export default function Home() {
     { label: "📺 4K Smart TV", query: "Smart TV" },
   ];
 
+  const triggerAIPrompt = (promptText: string) => {
+    window.dispatchEvent(new CustomEvent('open-dealhunter-ai', { detail: { prompt: promptText } }));
+  };
+
   return (
     <>
       {/* Hero Section */}
@@ -53,7 +57,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-7/12 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold mb-4 tracking-wide uppercase">
-                🇿🇦 South Africa's Smartest Deal Hunter
+                🇿🇦 South Africa''s Smartest Deal Hunter
               </div>
               
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-5">
@@ -103,6 +107,53 @@ export default function Home() {
                   </p>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Assistant Interactive Callout Banner */}
+      <section className="bg-emerald-900/10 border-b border-emerald-900/10 py-6">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-neutral-900 rounded-2xl p-5 sm:p-6 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6 border border-emerald-500/30">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center text-2xl shrink-0 shadow-xs">
+                🤖
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-extrabold text-base sm:text-lg text-white">
+                    Need Help Finding the Best Deal?
+                  </h3>
+                  <span className="bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-extrabold px-1.5 py-0.5 rounded uppercase">
+                    AI Deal Advisor
+                  </span>
+                </div>
+                <p className="text-emerald-100/80 text-xs sm:text-sm mt-0.5">
+                  Ask our AI Assistant to calculate braai budgets, compare loadshedding power kits, or find who has the cheapest groceries right now.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 w-full md:w-auto shrink-0 justify-start md:justify-end">
+              <button
+                onClick={() => triggerAIPrompt("Plan a braai for 6 people under R500")}
+                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold px-3 py-2 rounded-xl transition"
+              >
+                🍗 Braai Under R500
+              </button>
+              <button
+                onClick={() => triggerAIPrompt("Wi-Fi router backup for loadshedding under R1,000")}
+                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold px-3 py-2 rounded-xl transition"
+              >
+                ⚡ Router Backup
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-dealhunter-ai'))}
+                className="bg-emerald-500 hover:bg-emerald-400 text-neutral-950 text-xs font-black px-4 py-2 rounded-xl transition shadow-xs"
+              >
+                Chat with AI →
+              </button>
             </div>
           </div>
         </div>

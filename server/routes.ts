@@ -1,6 +1,7 @@
-import express, { type Express, type Request, type Response } from "express";
+﻿import express, { type Express, type Request, type Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { processAIChat } from "./aiAssistant";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a router for API routes
@@ -90,6 +91,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(products);
     } catch (error) {
       res.status(500).json({ message: 'Failed to search products' });
+    }
+  });
+
+  // AI Deal Assistant endpoint
+  apiRouter.post('/ai/chat', async (req: Request, res: Response) => {
+    try {
+      const { message, history } = req.body;
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ message: 'A valid text message is required.' });
+      }
+
+      const response = await processAIChat(message, history);
+      res.json(response);
+    } catch (error) {
+      console.error('Error in /api/ai/chat:', error);
+      res.status(500).json({ message: 'Failed to process AI chat request' });
     }
   });
 

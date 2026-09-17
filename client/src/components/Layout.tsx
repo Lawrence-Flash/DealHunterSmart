@@ -1,6 +1,7 @@
-import Header from "./Header";
+﻿import Header from "./Header";
 import Footer from "./Footer";
 import MobileNavigation from "./MobileNavigation";
+import AIAssistantModal from "./AIAssistantModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LayoutProps {
@@ -17,6 +18,7 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <Footer />
+      <AIAssistantModal />
       {isMobile && <MobileNavigation />}
     </div>
   );
