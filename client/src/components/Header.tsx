@@ -2,9 +2,11 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HeartLine } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
+import { useBasket } from "@/lib/basketContext";
 
 export default function Header() {
   const isMobile = useIsMobile();
+  const { totalCount } = useBasket();
 
   const handleOpenAI = () => {
     window.dispatchEvent(new CustomEvent('open-dealhunter-ai'));
@@ -45,14 +47,32 @@ export default function Header() {
           </Link>
         </nav>
         
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Smart Basket Button */}
+          <Link href="/basket">
+            <button className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 hover:border-emerald-500/50 text-neutral-200 transition shadow-xs cursor-pointer">
+              <span className="text-base">🛒</span>
+              <span className="hidden sm:inline text-xs font-bold">Basket</span>
+              {totalCount > 0 ? (
+                <span className="w-5 h-5 rounded-full bg-emerald-500 text-neutral-950 font-black text-[11px] flex items-center justify-center ml-0.5 animate-pulse">
+                  {totalCount}
+                </span>
+              ) : (
+                <span className="w-5 h-5 rounded-full bg-neutral-800 text-neutral-400 font-bold text-[10px] flex items-center justify-center ml-0.5">
+                  0
+                </span>
+              )}
+            </button>
+          </Link>
+
           {/* AI Deal Assistant Header Pill */}
           <button
             onClick={handleOpenAI}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-500/50 text-xs font-extrabold transition shadow-sm cursor-pointer group"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-500/50 text-xs font-extrabold transition shadow-sm cursor-pointer group"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>🤖 Ask AI</span>
+            <span className="hidden sm:inline">🤖 Ask AI</span>
+            <span className="sm:hidden">🤖 AI</span>
           </button>
 
           <Link href="/search">

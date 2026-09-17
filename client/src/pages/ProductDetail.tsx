@@ -1,4 +1,5 @@
-﻿import { useQuery } from "@tanstack/react-query";
+﻿import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Product, Store } from "@shared/schema";
 import { 
@@ -12,10 +13,13 @@ import PriceComparison from "@/components/PriceComparison";
 import ProductCard from "@/components/ProductCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatZAR } from "@/lib/utils";
+import { useBasket } from "@/lib/basketContext";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const productId = parseInt(id);
+  const { addItem } = useBasket();
+  const [justAdded, setJustAdded] = useState(false);
 
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ['/api/products'],
@@ -48,6 +52,12 @@ export default function ProductDetail() {
   const highestPrice = productStores.length > 0 ? Math.max(...productStores.map(s => s.price)) : 0;
   const savings = Math.max(0, highestPrice - lowestPrice);
   const savingsPercentage = highestPrice > 0 ? Math.round((savings / highestPrice) * 100) : 0;
+
+  const handleAddToBasket = () => {
+    addItem(product);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+  };
 
   // Similar products in same category
   const similarProducts = products
@@ -132,27 +142,48 @@ export default function ProductDetail() {
                   {product.description}
                 </p>
                 
-                {/* Price highlight banner */}
-                <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 mb-6 flex flex-wrap items-baseline justify-between gap-2">
-                  <div>
-                    <span className="text-xs font-semibold text-neutral-400 block">Lowest Price Available</span>
-                    <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className="text-3xl font-black text-emerald-400 tracking-tight">
-                        {formatZAR(lowestPrice)}
-                      </span>
-                      {highestPrice > lowestPrice && (
-                        <span className="text-sm text-neutral-500 line-through">
-                          {formatZAR(highestPrice)}
+                {/* Price highlight banner with Add to Basket CTA */}
+                <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-4 mb-6 space-y-3">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-semibold text-neutral-400 block">Lowest Price Available</span>
+                      <div className="flex items-baseline gap-2 mt-0.5">
+                        <span className="text-3xl font-black text-emerald-400 tracking-tight">
+                          {formatZAR(lowestPrice)}
                         </span>
-                      )}
+                        {highestPrice > lowestPrice && (
+                          <span className="text-sm text-neutral-500 line-through">
+                            {formatZAR(highestPrice)}
+                          </span>
+                        )}
+                      </div>
                     </div>
+
+                    {savings > 0 && (
+                      <div className="bg-emerald-600 text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-sm">
+                        Max Savings: {formatZAR(savings)}
+                      </div>
+                    )}
                   </div>
 
-                  {savings > 0 && (
-                    <div className="bg-emerald-600 text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-sm">
-                      Max Savings: {formatZAR(savings)}
-                    </div>
-                  )}
+                  <div className="pt-2 border-t border-emerald-900/50 flex gap-3">
+                    <button
+                      onClick={handleAddToBasket}
+                      className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs transition duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-xs ${
+                        justAdded
+                          ? 'bg-emerald-500 text-neutral-950'
+                          : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                      }`}
+                    >
+                      <span className="text-sm">🛒</span>
+                      <span>{justAdded ? '✓ Added to Grocery Basket!' : 'Add to Smart Grocery Basket'}</span>
+                    </button>
+                    <Link href="/basket">
+                      <Button variant="outline" className="text-xs bg-neutral-900 border-neutral-700 text-neutral-200 hover:bg-neutral-800">
+                        View Basket →
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Features list */}

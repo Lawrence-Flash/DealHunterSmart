@@ -1,8 +1,10 @@
-﻿import { Link } from "wouter";
+﻿import React, { useState } from "react";
+import { Link } from "wouter";
 import { Product, Store } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatZAR, getStoreBrandTheme } from "@/lib/utils";
+import { useBasket } from "@/lib/basketContext";
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +12,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, stores }: ProductCardProps) {
+  const { addItem } = useBasket();
+  const [justAdded, setJustAdded] = useState(false);
+
   const productStores = stores.filter(store => store.productId === product.id);
 
   if (productStores.length === 0) {
@@ -31,6 +36,14 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
   
   const maxSavings = Math.max(0, highestPrice - lowestPrice);
   const savingsPercentage = highestPrice > 0 ? Math.round((maxSavings / highestPrice) * 100) : 0;
+
+  const handleAddToBasket = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1500);
+  };
 
   return (
     <Card className="overflow-hidden hover:shadow-xl hover:shadow-emerald-950/30 transition-all duration-300 border-neutral-800 hover:border-emerald-500/50 bg-neutral-900 group flex flex-col justify-between">
@@ -117,12 +130,26 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
         </CardContent>
       </div>
 
-      <div className="p-4 pt-0">
-        <Link href={`/product/${product.id}`}>
-          <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 shadow-xs transition duration-200">
-            Compare All Deals ({productStores.length})
+      <div className="p-4 pt-0 grid grid-cols-5 gap-2">
+        <Link href={`/product/${product.id}`} className="col-span-3">
+          <Button className="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white font-bold text-xs py-2 shadow-xs transition duration-200 cursor-pointer">
+            Compare ({productStores.length})
           </Button>
         </Link>
+        <button
+          onClick={handleAddToBasket}
+          className={`col-span-2 py-2 px-2 rounded-lg font-bold text-xs transition duration-200 cursor-pointer flex items-center justify-center gap-1 shadow-xs ${
+            justAdded
+              ? 'bg-emerald-500 text-neutral-950 scale-105'
+              : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+          }`}
+        >
+          {justAdded ? (
+            <span>✓ Added</span>
+          ) : (
+            <span>+ Basket</span>
+          )}
+        </button>
       </div>
     </Card>
   );

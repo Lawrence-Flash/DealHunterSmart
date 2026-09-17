@@ -29,7 +29,7 @@ export const mockCategories: Omit<Category, "id">[] = [
   }
 ];
 
-// South African products
+// South African products (12 essential staples)
 export const mockProducts: Omit<Product, "id">[] = [
   {
     name: "Sunfoil Pure Sunflower Oil 2L",
@@ -84,6 +84,60 @@ export const mockProducts: Omit<Product, "id">[] = [
     brand: "Rainbow",
     unit: "2kg Bag",
     features: ["2kg Family Pack", "Mixed Drumsticks & Thighs", "Locally Produced in SA", "Halaal Certified"]
+  },
+  {
+    name: "Clover Full Cream Fresh Milk 2L",
+    description: "Pasteurised fresh full cream South African cows milk, source of calcium, protein, and essential vitamins.",
+    imageUrl: "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    categorySlug: "groceries",
+    brand: "Clover",
+    unit: "2L Bottle",
+    features: ["Full Cream", "Pasteurised", "Good Source of Calcium", "Fresh SA Dairy"]
+  },
+  {
+    name: "Albany Superior Sliced White Bread 700g",
+    description: "Thick sliced, oven-baked white bread fortified with vitamins and minerals for energy and freshness.",
+    imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    categorySlug: "groceries",
+    brand: "Albany",
+    unit: "700g Loaf",
+    features: ["Thick Sliced", "Fortified with Vitamins", "Fresh Soft Crust", "Everyday Toast & Sandwiches"]
+  },
+  {
+    name: "Tastic Parboiled Long Grain Rice 2kg",
+    description: "Specially selected long grain parboiled rice that cooks separately and fluffily every time.",
+    imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    categorySlug: "groceries",
+    brand: "Tastic",
+    unit: "2kg Bag",
+    features: ["Cooks Fluffy & Separate", "Parboiled Long Grain", "Naturally Gluten Free", "Pantry Staple"]
+  },
+  {
+    name: "OMO Auto Washing Powder 2kg",
+    description: "Formulated with built-in stain removers and fabric care enzymes for tough dirt in top and front loader machines.",
+    imageUrl: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    categorySlug: "groceries",
+    brand: "OMO",
+    unit: "2kg Box",
+    features: ["Tough Stain Removal in Quick Wash", "Front & Top Loader", "Fresh Long-lasting Fragrance", "Fabric Care"]
+  },
+  {
+    name: "Jacobs Krönung Instant Coffee 200g",
+    description: "Premium freeze-dried instant coffee made from high quality Arabica and Robusta beans with signature rich aroma.",
+    imageUrl: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    categorySlug: "groceries",
+    brand: "Jacobs",
+    unit: "200g Jar",
+    features: ["Rich & Aromatic", "Freeze-Dried Instant", "Signature Krönung Roast", "Yields approx. 110 Cups"]
+  },
+  {
+    name: "Coca-Cola Original Taste Less Sugar 2L",
+    description: "The refreshing taste of Coca-Cola with iconic bubbles, perfect chilled for Sunday lunches and braais.",
+    imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+    categorySlug: "groceries",
+    brand: "Coca-Cola",
+    unit: "2L Bottle",
+    features: ["Original Crisp Taste", "Best Served Ice Cold", "Ideal for Braais & Parties", "Recyclable PET Bottle"]
   }
 ];
 
@@ -383,6 +437,293 @@ export const mockStores: Omit<Store, "id">[] = [
     loyaltyProgram: null,
     shippingInfo: "In-store pickup & delivery",
     deliverySpeed: "Same-day pickup",
+    productUrl: "https://www.makro.co.za",
+    inStock: true
+  },
+
+  // Stores for Clover Fresh Milk 2L (Product 7)
+  {
+    name: "Checkers Sixty60",
+    productId: 7,
+    price: 36.99,
+    loyaltyPrice: 31.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 Sixty60 delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.checkers.co.za",
+    inStock: true
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 7,
+    price: 37.99,
+    loyaltyPrice: 32.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 asap! delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.pnp.co.za",
+    inStock: true
+  },
+  {
+    name: "Woolworths Dash",
+    productId: 7,
+    price: 39.99,
+    loyaltyPrice: 36.99,
+    loyaltyProgram: "WRewards",
+    shippingInfo: "R35 Dash delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.woolworths.co.za",
+    inStock: true
+  },
+  {
+    name: "Spar",
+    productId: 7,
+    price: 38.99,
+    loyaltyPrice: 34.99,
+    loyaltyProgram: "Spar Rewards",
+    shippingInfo: "Spar2U delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.spar.co.za",
+    inStock: true
+  },
+
+  // Stores for Albany Sliced White Bread 700g (Product 8)
+  {
+    name: "Checkers Sixty60",
+    productId: 8,
+    price: 18.99,
+    loyaltyPrice: 16.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 Sixty60 delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.checkers.co.za",
+    inStock: true
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 8,
+    price: 19.49,
+    loyaltyPrice: 16.49,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 asap! delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.pnp.co.za",
+    inStock: true
+  },
+  {
+    name: "Woolworths Dash",
+    productId: 8,
+    price: 21.99,
+    loyaltyPrice: 19.99,
+    loyaltyProgram: "WRewards",
+    shippingInfo: "R35 Dash delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.woolworths.co.za",
+    inStock: true
+  },
+  {
+    name: "Spar",
+    productId: 8,
+    price: 19.99,
+    loyaltyPrice: 17.99,
+    loyaltyProgram: "Spar Rewards",
+    shippingInfo: "Spar2U delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.spar.co.za",
+    inStock: true
+  },
+
+  // Stores for Tastic Rice 2kg (Product 9)
+  {
+    name: "Checkers Sixty60",
+    productId: 9,
+    price: 44.99,
+    loyaltyPrice: 38.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 Sixty60 delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.checkers.co.za",
+    inStock: true
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 9,
+    price: 46.99,
+    loyaltyPrice: 40.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 asap! delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.pnp.co.za",
+    inStock: true
+  },
+  {
+    name: "Makro",
+    productId: 9,
+    price: 39.99,
+    loyaltyPrice: null,
+    loyaltyProgram: null,
+    shippingInfo: "In-store & delivery",
+    deliverySpeed: "2-4 days",
+    productUrl: "https://www.makro.co.za",
+    inStock: true
+  },
+  {
+    name: "Woolworths Dash",
+    productId: 9,
+    price: 49.99,
+    loyaltyPrice: 44.99,
+    loyaltyProgram: "WRewards",
+    shippingInfo: "R35 Dash delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.woolworths.co.za",
+    inStock: true
+  },
+
+  // Stores for OMO Auto Washing Powder 2kg (Product 10)
+  {
+    name: "Checkers Sixty60",
+    productId: 10,
+    price: 92.99,
+    loyaltyPrice: 79.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 Sixty60 delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.checkers.co.za",
+    inStock: true
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 10,
+    price: 94.99,
+    loyaltyPrice: 76.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 asap! delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.pnp.co.za",
+    inStock: true
+  },
+  {
+    name: "Makro",
+    productId: 10,
+    price: 79.99,
+    loyaltyPrice: null,
+    loyaltyProgram: null,
+    shippingInfo: "In-store & delivery",
+    deliverySpeed: "2-4 days",
+    productUrl: "https://www.makro.co.za",
+    inStock: true
+  },
+  {
+    name: "Takealot",
+    productId: 10,
+    price: 99.00,
+    loyaltyPrice: null,
+    loyaltyProgram: null,
+    shippingInfo: "Free delivery over R500",
+    deliverySpeed: "Next-day",
+    productUrl: "https://www.takealot.com",
+    inStock: true
+  },
+
+  // Stores for Jacobs Krönung Instant Coffee 200g (Product 11)
+  {
+    name: "Checkers Sixty60",
+    productId: 11,
+    price: 149.99,
+    loyaltyPrice: 129.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 Sixty60 delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.checkers.co.za",
+    inStock: true
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 11,
+    price: 152.99,
+    loyaltyPrice: 128.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 asap! delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.pnp.co.za",
+    inStock: true
+  },
+  {
+    name: "Makro",
+    productId: 11,
+    price: 129.99,
+    loyaltyPrice: 124.99,
+    loyaltyProgram: "mCard Special",
+    shippingInfo: "In-store & delivery",
+    deliverySpeed: "2-4 days",
+    productUrl: "https://www.makro.co.za",
+    inStock: true
+  },
+  {
+    name: "Woolworths Dash",
+    productId: 11,
+    price: 159.99,
+    loyaltyPrice: 144.99,
+    loyaltyProgram: "WRewards",
+    shippingInfo: "R35 Dash delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.woolworths.co.za",
+    inStock: true
+  },
+
+  // Stores for Coca-Cola 2L (Product 12)
+  {
+    name: "Checkers Sixty60",
+    productId: 12,
+    price: 27.99,
+    loyaltyPrice: 22.99,
+    loyaltyProgram: "Xtra Savings",
+    shippingInfo: "R35 Sixty60 delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.checkers.co.za",
+    inStock: true
+  },
+  {
+    name: "Pick n Pay asap!",
+    productId: 12,
+    price: 28.99,
+    loyaltyPrice: 23.99,
+    loyaltyProgram: "Smart Shopper",
+    shippingInfo: "R35 asap! delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.pnp.co.za",
+    inStock: true
+  },
+  {
+    name: "Woolworths Dash",
+    productId: 12,
+    price: 31.99,
+    loyaltyPrice: 27.99,
+    loyaltyProgram: "WRewards",
+    shippingInfo: "R35 Dash delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.woolworths.co.za",
+    inStock: true
+  },
+  {
+    name: "Spar",
+    productId: 12,
+    price: 28.49,
+    loyaltyPrice: 24.99,
+    loyaltyProgram: "Spar Rewards",
+    shippingInfo: "Spar2U delivery",
+    deliverySpeed: "60 mins",
+    productUrl: "https://www.spar.co.za",
+    inStock: true
+  },
+  {
+    name: "Makro",
+    productId: 12,
+    price: 24.99,
+    loyaltyPrice: null,
+    loyaltyProgram: null,
+    shippingInfo: "In-store & delivery",
+    deliverySpeed: "2-4 days",
     productUrl: "https://www.makro.co.za",
     inStock: true
   }
