@@ -1,4 +1,4 @@
-﻿import { StarFill, StarLine, UserLine } from "@/lib/icons";
+﻿import { StarFill, StarLine } from "@/lib/icons";
 
 export default function Testimonials() {
   const testimonials = [
@@ -28,46 +28,46 @@ export default function Testimonials() {
       if (i <= rating) {
         stars.push(<StarFill key={i} className="text-amber-400 h-4 w-4" />);
       } else {
-        stars.push(<StarLine key={i} className="text-amber-400 h-4 w-4" />);
+        stars.push(<StarLine key={i} className="text-neutral-600 h-4 w-4" />);
       }
     }
     return stars;
   };
 
   return (
-    <section className="py-16 bg-neutral-50/70 border-t border-neutral-200/60">
+    <section className="py-16 bg-neutral-950 border-t border-neutral-850">
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center max-w-xl mx-auto mb-12">
-          <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest block mb-1">
+          <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">
             Community Love
           </span>
-          <h2 className="text-2xl md:text-3xl font-black text-neutral-900 tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
             Loved by Smart South African Shoppers
           </h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-white p-6 rounded-2xl border border-neutral-200 shadow-xs flex flex-col justify-between">
+            <div key={index} className="bg-neutral-900/80 p-6 rounded-2xl border border-neutral-800 shadow-sm flex flex-col justify-between hover:border-emerald-500/40 transition">
               <div>
                 <div className="flex items-center mb-3">
                   <div className="flex mr-2">
                     {renderStars(testimonial.rating)}
                   </div>
-                  <span className="text-neutral-500 text-xs font-bold">{testimonial.rating.toFixed(1)}</span>
+                  <span className="text-neutral-400 text-xs font-bold">{testimonial.rating.toFixed(1)}</span>
                 </div>
-                <p className="text-neutral-700 text-xs sm:text-sm leading-relaxed mb-5 italic">
+                <p className="text-neutral-300 text-xs sm:text-sm leading-relaxed mb-5 italic">
                   "{testimonial.text}"
                 </p>
               </div>
 
-              <div className="flex items-center pt-3 border-t border-neutral-100">
-                <div className="bg-emerald-100 text-emerald-800 rounded-full w-9 h-9 flex items-center justify-center font-bold text-xs mr-3 shrink-0">
+              <div className="flex items-center pt-3 border-t border-neutral-800">
+                <div className="bg-emerald-950 text-emerald-400 border border-emerald-800/80 rounded-full w-9 h-9 flex items-center justify-center font-bold text-xs mr-3 shrink-0">
                   {testimonial.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
-                  <h5 className="font-bold text-neutral-900 text-xs">{testimonial.name}</h5>
-                  <div className="text-[11px] text-neutral-500">{testimonial.title}</div>
+                  <h5 className="font-bold text-white text-xs">{testimonial.name}</h5>
+                  <div className="text-[11px] text-neutral-400">{testimonial.title}</div>
                 </div>
               </div>
             </div>

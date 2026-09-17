@@ -34,7 +34,7 @@ export default function SearchBar() {
   return (
     <div className="relative">
       <form onSubmit={handleSearch}>
-        <div className="flex shadow-lg rounded-2xl overflow-hidden border border-white/20 bg-white">
+        <div className="flex shadow-2xl rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 focus-within:border-emerald-500/80 transition duration-200">
           <div className="relative flex-grow">
             <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none">
               <SearchLine className="text-neutral-400 h-5 w-5" />
@@ -42,14 +42,14 @@ export default function SearchBar() {
             <Input 
               type="text" 
               placeholder="Search Checkers, Takealot, Makro, Amazon SA, PnP..." 
-              className="w-full bg-white border-0 py-6 pl-11 pr-4 text-neutral-800 placeholder:text-neutral-400 text-sm md:text-base focus:ring-0 focus-visible:ring-0 focus:outline-none"
+              className="w-full bg-transparent border-0 py-6 pl-11 pr-4 text-white placeholder:text-neutral-500 text-sm md:text-base focus:ring-0 focus-visible:ring-0 focus:outline-none"
               value={searchTerm}
               onChange={handleSearchInput}
             />
           </div>
           <Button 
             type="submit"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 md:px-8 py-6 font-bold text-sm transition duration-200 h-auto rounded-none"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 md:px-8 py-6 font-bold text-sm transition duration-200 h-auto rounded-none"
           >
             Find Best Deal
           </Button>
@@ -62,7 +62,7 @@ export default function SearchBar() {
             key={cat.slug}
             variant="outline" 
             size="sm"
-            className="px-3 py-1 bg-white/90 backdrop-blur-xs text-neutral-800 rounded-full border border-neutral-200/80 text-xs font-medium whitespace-nowrap hover:bg-white hover:text-emerald-700 shadow-2xs"
+            className="px-3 py-1 bg-neutral-900/90 hover:bg-neutral-850 text-neutral-300 hover:text-emerald-300 rounded-full border border-neutral-800 hover:border-emerald-500/60 text-xs font-medium whitespace-nowrap shadow-xs transition"
             onClick={() => handleCategoryClick(cat.slug)}
           >
             {cat.name}

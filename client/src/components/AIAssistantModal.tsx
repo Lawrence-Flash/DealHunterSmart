@@ -61,7 +61,6 @@ export default function AIAssistantModal() {
     const query = text.trim();
     if (!query || loading) return;
 
-    // Append user message
     const newMessages: Message[] = [...messages, { role: "user", content: query }];
     setMessages(newMessages);
     setInputValue("");
@@ -118,7 +117,7 @@ export default function AIAssistantModal() {
       {/* Floating Action Button (FAB) */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-3.5 sm:px-5 sm:py-3.5 rounded-full shadow-2xl hover:shadow-emerald-500/25 hover:scale-105 transition-all duration-300 flex items-center gap-2.5 group border border-emerald-400/40"
+        className="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-3.5 sm:px-5 sm:py-3.5 rounded-full shadow-2xl hover:shadow-emerald-500/25 hover:scale-105 transition-all duration-300 flex items-center gap-2.5 group border border-emerald-400/40 cursor-pointer"
         aria-label="Open DealHunter AI Assistant"
       >
         <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm font-black group-hover:rotate-12 transition-transform">
@@ -132,16 +131,16 @@ export default function AIAssistantModal() {
 
       {/* Modal Backdrop & Drawer */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs transition-opacity duration-300">
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-xs transition-opacity duration-300">
           <div
-            className="w-full max-w-lg bg-white h-full flex flex-col shadow-2xl border-l border-neutral-200 animate-in slide-in-from-right duration-300"
+            className="w-full max-w-lg bg-neutral-950 h-full flex flex-col shadow-2xl border-l border-neutral-800 animate-in slide-in-from-right duration-300 text-neutral-100"
             role="dialog"
             aria-modal="true"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-neutral-900 text-white p-4 flex items-center justify-between border-b border-emerald-700/50">
+            <div className="bg-neutral-900 p-4 flex items-center justify-between border-b border-neutral-800">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/30 border border-emerald-400/40 flex items-center justify-center text-xl shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-500/40 flex items-center justify-center text-xl shadow-xs">
                   🤖
                 </div>
                 <div>
@@ -149,11 +148,11 @@ export default function AIAssistantModal() {
                     <h3 className="font-extrabold text-sm sm:text-base text-white tracking-tight">
                       DealHunter AI Assistant
                     </h3>
-                    <span className="bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold px-1.5 py-0.2 rounded uppercase">
+                    <span className="bg-emerald-950 text-emerald-400 border border-emerald-500/40 text-[10px] font-bold px-1.5 py-0.2 rounded uppercase">
                       SA 🇿🇦
                     </span>
                   </div>
-                  <p className="text-[11px] text-emerald-200/80">
+                  <p className="text-[11px] text-neutral-400">
                     Real-time retail price & basket optimizer
                   </p>
                 </div>
@@ -161,7 +160,7 @@ export default function AIAssistantModal() {
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-sm transition"
+                className="w-8 h-8 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white flex items-center justify-center text-sm transition cursor-pointer"
                 aria-label="Close Assistant"
               >
                 ✕
@@ -169,7 +168,7 @@ export default function AIAssistantModal() {
             </div>
 
             {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-neutral-50/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-neutral-950">
               {messages.map((msg, i) => (
                 <div
                   key={i}
@@ -178,18 +177,18 @@ export default function AIAssistantModal() {
                   }`}
                 >
                   <div
-                    className={`max-w-[90%] rounded-2xl p-3.5 text-xs sm:text-sm leading-relaxed shadow-xs ${
+                    className={`max-w-[90%] rounded-2xl p-3.5 text-xs sm:text-sm leading-relaxed shadow-sm ${
                       msg.role === "user"
-                        ? "bg-emerald-600 text-white rounded-br-xs"
-                        : "bg-white text-neutral-800 border border-neutral-200/90 rounded-bl-xs"
+                        ? "bg-emerald-600 text-white rounded-br-xs font-medium"
+                        : "bg-neutral-900 text-neutral-200 border border-neutral-800 rounded-bl-xs"
                     }`}
                   >
                     {/* Render formatted markdown-like text */}
-                    <div className="space-y-2 prose prose-sm max-w-none">
+                    <div className="space-y-2 prose prose-invert prose-sm max-w-none">
                       {msg.content.split("\n\n").map((paragraph, pIdx) => {
                         if (paragraph.startsWith("### ")) {
                           return (
-                            <h4 key={pIdx} className="font-extrabold text-neutral-900 text-sm mb-1">
+                            <h4 key={pIdx} className="font-extrabold text-white text-sm mb-1">
                               {paragraph.replace("### ", "")}
                             </h4>
                           );
@@ -203,7 +202,7 @@ export default function AIAssistantModal() {
                                   dangerouslySetInnerHTML={{
                                     __html: line
                                       .replace("* ", "")
-                                      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>"),
+                                      .replace(/\*\*(.*?)\*\*/g, "<strong class='text-emerald-400 font-bold'>$1</strong>"),
                                   }}
                                 />
                               ))}
@@ -216,7 +215,7 @@ export default function AIAssistantModal() {
                             dangerouslySetInnerHTML={{
                               __html: paragraph.replace(
                                 /\*\*(.*?)\*\*/g,
-                                "<strong>$1</strong>"
+                                "<strong class='text-white font-bold'>$1</strong>"
                               ),
                             }}
                           />
@@ -226,7 +225,7 @@ export default function AIAssistantModal() {
 
                     {/* Embedded Product Mini-Cards */}
                     {msg.suggestedProducts && msg.suggestedProducts.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-neutral-100 space-y-2">
+                      <div className="mt-3 pt-3 border-t border-neutral-800 space-y-2">
                         <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
                           Suggested Matches:
                         </div>
@@ -236,15 +235,15 @@ export default function AIAssistantModal() {
                             return (
                               <div
                                 key={p.id}
-                                className="flex items-center gap-3 bg-neutral-50 p-2 rounded-xl border border-neutral-200/80 hover:border-emerald-400 transition"
+                                className="flex items-center gap-3 bg-neutral-950 p-2.5 rounded-xl border border-neutral-800 hover:border-emerald-500/50 transition"
                               >
                                 <img
                                   src={p.imageUrl}
                                   alt={p.name}
-                                  className="w-12 h-12 rounded-lg object-cover bg-white shrink-0"
+                                  className="w-12 h-12 rounded-lg object-cover bg-neutral-900 shrink-0 opacity-90"
                                 />
                                 <div className="flex-1 min-w-0">
-                                  <div className="font-bold text-neutral-900 text-xs truncate">
+                                  <div className="font-bold text-white text-xs truncate">
                                     {p.name}
                                   </div>
                                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -252,10 +251,10 @@ export default function AIAssistantModal() {
                                       className="w-2 h-2 rounded-full shrink-0"
                                       style={{ backgroundColor: theme.accentHex }}
                                     />
-                                    <span className="text-[11px] text-neutral-600 font-medium truncate">
+                                    <span className="text-[11px] text-neutral-400 font-medium truncate">
                                       {p.bestStore}
                                     </span>
-                                    <span className="font-extrabold text-emerald-700 text-xs ml-auto">
+                                    <span className="font-black text-emerald-400 text-xs ml-auto">
                                       {formatZAR(p.lowestPrice)}
                                     </span>
                                   </div>
@@ -263,7 +262,7 @@ export default function AIAssistantModal() {
                                 <Link
                                   href={`/product/${p.id}`}
                                   onClick={() => setIsOpen(false)}
-                                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg shrink-0 shadow-2xs"
+                                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg shrink-0 shadow-xs"
                                 >
                                   View Deal
                                 </Link>
@@ -282,7 +281,7 @@ export default function AIAssistantModal() {
                         <button
                           key={pIdx}
                           onClick={() => sendMessage(prompt)}
-                          className="bg-white hover:bg-emerald-50 border border-neutral-200 hover:border-emerald-300 text-neutral-700 hover:text-emerald-800 text-[11px] font-medium px-2.5 py-1 rounded-full shadow-2xs transition"
+                          className="bg-neutral-900 hover:bg-neutral-850 border border-neutral-800 hover:border-emerald-500/50 text-neutral-300 hover:text-emerald-300 text-[11px] font-medium px-2.5 py-1 rounded-full shadow-xs transition cursor-pointer"
                         >
                           {prompt} →
                         </button>
@@ -293,17 +292,17 @@ export default function AIAssistantModal() {
               ))}
 
               {loading && (
-                <div className="flex items-center space-x-2 bg-white p-3 rounded-2xl border border-neutral-200 w-fit text-xs text-neutral-500 shadow-xs">
-                  <div className="w-2 h-2 rounded-full bg-emerald-600 animate-bounce" />
+                <div className="flex items-center space-x-2 bg-neutral-900 p-3 rounded-2xl border border-neutral-800 w-fit text-xs text-neutral-400 shadow-xs">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" />
                   <div
-                    className="w-2 h-2 rounded-full bg-emerald-600 animate-bounce"
+                    className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce"
                     style={{ animationDelay: "0.2s" }}
                   />
                   <div
-                    className="w-2 h-2 rounded-full bg-emerald-600 animate-bounce"
+                    className="w-2 h-2 rounded-full bg-emerald-400 animate-bounce"
                     style={{ animationDelay: "0.4s" }}
                   />
-                  <span className="font-medium text-[11px] text-neutral-600 ml-1">
+                  <span className="font-medium text-[11px] text-neutral-300 ml-1">
                     Checking Checkers, Takealot, Makro, Amazon SA...
                   </span>
                 </div>
@@ -313,7 +312,7 @@ export default function AIAssistantModal() {
             </div>
 
             {/* Input Area */}
-            <div className="p-3.5 bg-white border-t border-neutral-200">
+            <div className="p-3.5 bg-neutral-950 border-t border-neutral-800">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -328,17 +327,17 @@ export default function AIAssistantModal() {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   disabled={loading}
-                  className="flex-1 bg-neutral-100 border border-neutral-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="flex-1 bg-neutral-900 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
                 />
                 <button
                   type="submit"
                   disabled={!inputValue.trim() || loading}
-                  className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition"
+                  className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs transition cursor-pointer"
                 >
                   Send
                 </button>
               </form>
-              <div className="mt-2 text-center text-[10px] text-neutral-400">
+              <div className="mt-2 text-center text-[10px] text-neutral-500">
                 DealHunter AI compares prices with loyalty cards & on-demand delivery factored in.
               </div>
             </div>

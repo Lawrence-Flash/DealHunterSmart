@@ -41,12 +41,12 @@ export default function SearchResults() {
   const selectedCategory = categories.find(c => c.slug === categorySlug);
 
   return (
-    <div className="min-h-screen bg-neutral-50/50">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100">
       {/* Search Header */}
-      <section className="bg-gradient-to-b from-emerald-950 via-emerald-900 to-neutral-900 text-white py-10 shadow-inner">
+      <section className="bg-gradient-to-b from-emerald-950/70 via-neutral-950 to-neutral-950 text-white py-10 border-b border-neutral-850">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="mb-4">
-            <div className="text-xs font-semibold text-emerald-300 uppercase tracking-wider mb-1">
+            <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">
               DealHunter Search
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
@@ -57,7 +57,7 @@ export default function SearchResults() {
                   : 'All South African Deals'
               }
             </h1>
-            <p className="text-emerald-100/70 text-xs md:text-sm mt-1">
+            <p className="text-neutral-400 text-xs md:text-sm mt-1">
               Showing {filteredProducts.length} verified item{filteredProducts.length === 1 ? '' : 's'} across Checkers, Pick n Pay, Takealot, Makro and more.
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function SearchResults() {
       </section>
 
       {/* Search Results Content */}
-      <section className="py-10">
+      <section className="py-10 bg-neutral-950">
         <div className="container mx-auto px-4 max-w-6xl">
           <CategoryFilter 
             categories={categories} 
@@ -77,16 +77,16 @@ export default function SearchResults() {
           />
           
           {filteredProducts.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-2xl border border-neutral-200 p-8 shadow-xs">
-              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+            <div className="text-center py-16 bg-neutral-900 rounded-2xl border border-neutral-800 p-8 shadow-sm">
+              <div className="w-16 h-16 bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                 🔍
               </div>
-              <h3 className="text-xl font-bold text-neutral-900 mb-2">No matching deals found</h3>
-              <p className="text-neutral-500 text-sm max-w-md mx-auto mb-6">
+              <h3 className="text-xl font-bold text-white mb-2">No matching deals found</h3>
+              <p className="text-neutral-400 text-sm max-w-md mx-auto mb-6">
                 We couldn't find any items matching "{searchQuery}". Try searching for popular items like "Oil", "UPS", "Airfryer", or "TV".
               </p>
               <Link href="/search">
-                <button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-6 rounded-xl transition shadow-xs">
+                <button className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-6 rounded-xl transition shadow-xs cursor-pointer">
                   View All Products
                 </button>
               </Link>

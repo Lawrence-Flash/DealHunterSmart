@@ -1,64 +1,28 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 142 72% 29%;
-  --primary-foreground: 144 70% 98%;
-  --secondary: 217 92% 60%;
-  --secondary-foreground: 214 60% 98%;
-  --accent: 43 96% 58%;
-  --accent-foreground: 45 97% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 142 72% 29%;
-  --radius: 0.5rem;
-  --chart-1: 0 84% 60%;
-  --chart-2: 217 92% 60%;
-  --chart-3: 142 72% 29%;
-  --chart-4: 43 96% 58%;
-  --chart-5: 262 83% 58%;
-  --sidebar-background: 20 14.3% 4.1%;
-  --sidebar-foreground: 60 9.1% 97.8%;
-  --sidebar-primary: 142 72% 29%;
-  --sidebar-primary-foreground: 144 70% 98%;
-  --sidebar-accent: 12 6.5% 15.1%;
-  --sidebar-accent-foreground: 60 9.1% 97.8%;
-  --sidebar-border: 12 6.5% 15.1%;
-  --sidebar-ring: 24 9.8% 10%;
-}
-
-.dark {
+:root, .dark {
   --background: 240 10% 3.9%;
   --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
+  --muted: 240 5% 15%;
+  --muted-foreground: 240 5% 65%;
+  --popover: 240 10% 4%;
   --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
+  --card: 240 10% 4%;
   --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 142 64% 24%;
-  --primary-foreground: 144 70% 98%;
-  --secondary: 217 92% 60%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 35 92% 50%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
+  --border: 240 4% 18%;
+  --input: 240 4% 18%;
+  --primary: 152 76% 40%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 160 84% 39%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 43 96% 58%;
+  --accent-foreground: 45 97% 10%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
-  --ring: 142 64% 24%;
-  --radius: 0.5rem;
+  --ring: 152 76% 40%;
+  --radius: 0.75rem;
 }
 
 @layer base {
@@ -67,7 +31,7 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-neutral-950 text-neutral-100 selection:bg-emerald-500/30 selection:text-emerald-200;
   }
 }
 
@@ -82,39 +46,23 @@
   }
 }
 
-/* Animation Classes */
-.search-animation {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-  }
-}
-
+/* Pulse animation for best deals */
 .price-badge {
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .price-badge:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .comparison-appear {
-  animation: slideIn 0.5s ease;
+  animation: slideIn 0.3s ease-out;
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;

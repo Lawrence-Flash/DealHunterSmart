@@ -10,7 +10,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, stores }: ProductCardProps) {
-  // Calculate effective price for each store (loyalty price if available, otherwise regular price)
   const productStores = stores.filter(store => store.productId === product.id);
 
   if (productStores.length === 0) {
@@ -34,45 +33,45 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
   const savingsPercentage = highestPrice > 0 ? Math.round((maxSavings / highestPrice) * 100) : 0;
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-neutral-200/80 hover:border-primary-400 group flex flex-col justify-between">
+    <Card className="overflow-hidden hover:shadow-xl hover:shadow-emerald-950/30 transition-all duration-300 border-neutral-800 hover:border-emerald-500/50 bg-neutral-900 group flex flex-col justify-between">
       <div>
-        <div className="relative overflow-hidden bg-neutral-100">
+        <div className="relative overflow-hidden bg-neutral-950">
           <img 
             src={product.imageUrl} 
             alt={product.name} 
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
           />
           {savingsPercentage > 0 && (
-            <div className="absolute top-3 right-3 bg-emerald-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-sm tracking-wide">
+            <div className="absolute top-3 right-3 bg-emerald-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-md tracking-wide">
               Save {savingsPercentage}%
             </div>
           )}
           {product.brand && (
-            <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm text-neutral-800 px-2.5 py-0.5 rounded text-xs font-semibold shadow-xs">
+            <div className="absolute bottom-3 left-3 bg-neutral-900/90 backdrop-blur-sm text-neutral-200 border border-neutral-800 px-2.5 py-0.5 rounded text-xs font-semibold shadow-xs">
               {product.brand} {product.unit ? `• ${product.unit}` : ''}
             </div>
           )}
         </div>
         
         <CardContent className="p-4">
-          <h3 className="font-bold text-neutral-900 text-base mb-1 line-clamp-1 group-hover:text-primary-600 transition-colors">
+          <h3 className="font-bold text-white text-base mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">
             {product.name}
           </h3>
-          <p className="text-neutral-500 text-xs mb-3 line-clamp-2">
+          <p className="text-neutral-400 text-xs mb-3 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
 
           <div className="mb-3 flex items-baseline justify-between">
             <div>
-              <div className="text-xs text-neutral-500 font-medium">Best Deal From</div>
-              <div className="text-xl font-extrabold text-emerald-600 tracking-tight">
+              <div className="text-xs text-neutral-400 font-medium">Best Deal From</div>
+              <div className="text-xl font-black text-emerald-400 tracking-tight">
                 {formatZAR(lowestPrice)}
               </div>
             </div>
             {maxSavings > 0 && (
               <div className="text-right">
-                <span className="text-xs text-neutral-400 line-through mr-1.5">{formatZAR(highestPrice)}</span>
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                <span className="text-xs text-neutral-500 line-through mr-1.5">{formatZAR(highestPrice)}</span>
+                <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-800/60 px-1.5 py-0.5 rounded">
                   Save {formatZAR(maxSavings)}
                 </span>
               </div>
@@ -80,8 +79,8 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
           </div>
           
           {/* Quick Store Price Preview */}
-          <div className="border-t border-neutral-100 pt-3 space-y-1.5">
-            <div className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-1">
+          <div className="border-t border-neutral-800 pt-3 space-y-1.5">
+            <div className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1">
               Top Compare Stores ({productStores.length})
             </div>
             
@@ -94,19 +93,21 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
                 <div 
                   key={store.id} 
                   className={`flex justify-between items-center text-xs p-1.5 rounded-md transition ${
-                    isBest ? 'bg-emerald-50/80 border border-emerald-200' : 'bg-neutral-50'
+                    isBest 
+                      ? 'bg-emerald-950/50 border border-emerald-500/40 text-emerald-200' 
+                      : 'bg-neutral-950/70 border border-neutral-800/80 text-neutral-300'
                   }`}
                 >
                   <div className="flex items-center space-x-1.5 truncate">
-                    <span className={`w-2 h-2 rounded-full`} style={{ backgroundColor: theme.accentHex }} />
-                    <span className="font-medium text-neutral-800 truncate">{store.name}</span>
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: theme.accentHex }} />
+                    <span className="font-medium truncate text-neutral-200">{store.name}</span>
                     {store.loyaltyProgram && (
-                      <span className="text-[10px] text-primary-700 font-semibold bg-primary-100/70 px-1 rounded">
+                      <span className="text-[10px] text-emerald-400 font-semibold bg-emerald-950 border border-emerald-800/60 px-1 rounded">
                         {store.loyaltyProgram}
                       </span>
                     )}
                   </div>
-                  <div className="font-bold text-neutral-900 shrink-0 ml-2">
+                  <div className="font-bold text-white shrink-0 ml-2">
                     {formatZAR(storeEffectivePrice)}
                   </div>
                 </div>
@@ -118,7 +119,7 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
 
       <div className="p-4 pt-0">
         <Link href={`/product/${product.id}`}>
-          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs py-2 shadow-xs transition duration-200">
+          <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 shadow-xs transition duration-200">
             Compare All Deals ({productStores.length})
           </Button>
         </Link>
