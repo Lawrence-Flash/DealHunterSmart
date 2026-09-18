@@ -11,17 +11,22 @@ import {
 import { Button } from "@/components/ui/button";
 import PriceComparison from "@/components/PriceComparison";
 import ProductCard from "@/components/ProductCard";
+import PriceAlertModal from "@/components/PriceAlertModal";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatZAR } from "@/lib/utils";
 import { useBasket } from "@/lib/basketContext";
+import { useWishlist } from "@/lib/wishlistContext";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const productId = parseInt(id);
   const queryClient = useQueryClient();
   const { addItem } = useBasket();
+  const { isInWishlist, toggleWishlist, getAlertForProduct } = useWishlist();
+
   const [justAdded, setJustAdded] = useState(false);
   const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ['/api/products'],
@@ -66,6 +71,9 @@ export default function ProductDetail() {
     );
   }
 
+  const isSaved = isInWishlist(product.id);
+  const existingAlert = getAlertForProduct(product.id);
+
   // Calculate prices
   const storePrices = productStores.map(store => store.loyaltyPrice ?? store.price);
   const lowestPrice = storePrices.length > 0 ? Math.min(...storePrices) : 0;
@@ -77,6 +85,15 @@ export default function ProductDetail() {
     addItem(product);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
+  };
+
+  const handleShareDeal = () => {
+    const text = `Check out this deal on DealHunterSmart: ${product.name} starting at ${formatZAR(lowestPrice)}! ${window.location.href}`;
+    if (navigator.share) {
+      navigator.share({ title: product.name, text, url: window.location.href }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    }
   };
 
   // Find similar products in same category
@@ -123,16 +140,54 @@ export default function ProductDetail() {
 
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="rounded-lg text-xs gap-1.5 bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700">
-                      <HeartLine className="h-4 w-4" /> Save
-                    </Button>
-                    <Button variant="outline" size="sm" className="rounded-lg text-xs gap-1.5 bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700">
+                    <button
+                      onClick={() => toggleWishlist(product)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border ${
+                        isSaved
+                          ? "bg-rose-950/80 border-rose-500 text-rose-300"
+                          : "bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700"
+                      }`}
+                    >
+                      <span>{isSaved ? "❤️" : "🤍"}</span>
+                      <span>{isSaved ? "Saved" : "Save"}</span>
+                    </button>
+                    <Button 
+                      onClick={handleShareDeal}
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-lg text-xs gap-1.5 bg-neutral-800 border-neutral-700 text-neutral-200 hover:bg-neutral-700"
+                    >
                       <ShareLine className="h-4 w-4" /> Share
                     </Button>
                   </div>
                   <div className="text-xs text-neutral-400 font-medium">
                     {productStores.length} SA Retailers Tracked
                   </div>
+                </div>
+
+                {/* Price Alert Quick Action Box */}
+                <div className="mt-4 p-3.5 rounded-xl bg-neutral-950 border border-neutral-800/90 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base">
+                      🔔
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-white">
+                        {existingAlert ? "Price Alert Active" : "Track Price Drops"}
+                      </div>
+                      <div className="text-[11px] text-neutral-400">
+                        {existingAlert 
+                          ? `Target: ${formatZAR(existingAlert.targetPrice)} (${existingAlert.channel})`
+                          : "Get notified on WhatsApp when price drops"}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsAlertModalOpen(true)}
+                    className="py-1.5 px-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-amber-300 hover:text-white text-xs font-bold transition border border-neutral-700 cursor-pointer"
+                  >
+                    {existingAlert ? "Edit Alert" : "Set Alert"}
+                  </button>
                 </div>
 
                 {/* Live Feed Status Bar */}
@@ -294,6 +349,14 @@ export default function ProductDetail() {
           </div>
         )}
       </div>
+
+      {/* Price Alert Modal */}
+      <PriceAlertModal
+        product={product}
+        currentLowestPrice={lowestPrice}
+        isOpen={isAlertModalOpen}
+        onClose={() => setIsAlertModalOpen(false)}
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatZAR, getStoreBrandTheme } from "@/lib/utils";
 import { useBasket } from "@/lib/basketContext";
+import { useWishlist } from "@/lib/wishlistContext";
 
 interface ProductCardProps {
   product: Product;
@@ -13,6 +14,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, stores }: ProductCardProps) {
   const { addItem } = useBasket();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [justAdded, setJustAdded] = useState(false);
 
   const productStores = stores.filter(store => store.productId === product.id);
@@ -20,6 +22,8 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
   if (productStores.length === 0) {
     return null;
   }
+
+  const isSaved = isInWishlist(product.id);
 
   // Sort stores by effective price ascending (cheapest first)
   const sortedStores = [...productStores].sort((a, b) => {
@@ -45,6 +49,12 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
     setTimeout(() => setJustAdded(false), 1500);
   };
 
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+  };
+
   return (
     <Card className="overflow-hidden hover:shadow-xl hover:shadow-emerald-950/30 transition-all duration-300 border-neutral-800 hover:border-emerald-500/50 bg-neutral-900 group flex flex-col justify-between">
       <div>
@@ -60,11 +70,25 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
             <span>Live Verified</span>
           </div>
 
-          {savingsPercentage > 0 && (
-            <div className="absolute top-2.5 right-2.5 bg-emerald-600 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-md tracking-wide">
-              Save {savingsPercentage}%
-            </div>
-          )}
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+            {savingsPercentage > 0 && (
+              <div className="bg-emerald-600 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-md tracking-wide">
+                Save {savingsPercentage}%
+              </div>
+            )}
+            <button
+              onClick={handleToggleWishlist}
+              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs transition backdrop-blur-xs shadow-xs cursor-pointer ${
+                isSaved 
+                  ? "bg-rose-500 text-white scale-110" 
+                  : "bg-neutral-900/80 text-neutral-400 hover:text-rose-400 hover:bg-neutral-850"
+              }`}
+              title={isSaved ? "Saved in Wishlist" : "Save to Wishlist & Price Alerts"}
+            >
+              {isSaved ? "❤️" : "🤍"}
+            </button>
+          </div>
+
           {product.brand && (
             <div className="absolute bottom-2.5 left-2.5 bg-neutral-900/90 backdrop-blur-xs text-neutral-300 border border-neutral-800 px-2 py-0.5 rounded text-[11px] font-semibold shadow-xs">
               {product.brand} {product.unit ? `• ${product.unit}` : ''}

@@ -4,6 +4,20 @@ import { storage } from "./storage";
 import { processAIChat } from "./aiAssistant";
 import { liveStoreScraper } from "./services/liveStoreScraper";
 
+interface ServerAlert {
+  id: string;
+  productId: number;
+  productName: string;
+  targetPrice: number;
+  currentLowestPrice: number;
+  channel: "whatsapp" | "email" | "browser";
+  contact: string;
+  createdAt: string;
+  isTriggered: boolean;
+}
+
+const serverAlerts: Map<string, ServerAlert> = new Map();
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a router for API routes
   const apiRouter = express.Router();
@@ -142,6 +156,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error(`Error in /api/live-sync/${req.params.productId}:`, error);
       res.status(500).json({ message: 'Failed to sync product with live retailer catalogs' });
     }
+  });
+
+  // Price Drop Alerts endpoints
+  apiRouter.get('/alerts', (req: Request, res: Response) => {
+    res.json(Array.from(serverAlerts.values()));
+  });
+
+  apiRouter.post('/alerts', (req: Request, res: Response) => {
+    try {
+      const alert: ServerAlert = req.body;
+      if (!alert || !alert.productId || !alert.targetPrice) {
+        return res.status(400).json({ message: 'Invalid alert payload' });
+      }
+      serverAlerts.set(alert.id, alert);
+      res.status(201).json({ message: 'Alert registered successfully', alert });
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to save alert' });
+    }
+  });
+
+  apiRouter.post('/alerts/test-notify', (req: Request, res: Response) => {
+    const { productId, targetPrice, channel, contact } = req.body;
+    res.json({
+      status: 'simulated_success',
+      channel,
+      recipient: contact,
+      message: `[SIMULATED ${channel.toUpperCase()}] DealHunterSmart Price Drop Alert sent for product #${productId} with target R${targetPrice}`
+    });
   });
 
   const httpServer = createServer(app);
