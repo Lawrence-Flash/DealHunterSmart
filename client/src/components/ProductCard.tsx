@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "wouter";
 import { Product, Store } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { formatZAR, getStoreBrandTheme } from "@/lib/utils";
 import { useBasket } from "@/lib/basketContext";
 import { useWishlist } from "@/lib/wishlistContext";
+import { useDelivery } from "@/lib/deliveryContext";
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +16,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, stores }: ProductCardProps) {
   const { addItem } = useBasket();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { currentSuburb, getRetailerCoverage } = useDelivery();
   const [justAdded, setJustAdded] = useState(false);
 
   const productStores = stores.filter(store => store.productId === product.id);
@@ -40,6 +42,9 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
   
   const maxSavings = Math.max(0, highestPrice - lowestPrice);
   const savingsPercentage = highestPrice > 0 ? Math.round((maxSavings / highestPrice) * 100) : 0;
+
+  // Delivery info for lowest store in active suburb
+  const lowestCoverage = getRetailerCoverage(lowestStore.name);
 
   const handleAddToBasket = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -100,9 +105,17 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
           <h3 className="font-bold text-white text-base mb-1 line-clamp-1 group-hover:text-emerald-400 transition-colors">
             {product.name}
           </h3>
-          <p className="text-neutral-400 text-xs mb-3 line-clamp-2 leading-relaxed">
+          <p className="text-neutral-400 text-xs mb-2.5 line-clamp-2 leading-relaxed">
             {product.description}
           </p>
+
+          {/* Delivery pill for active suburb */}
+          <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 mb-3 bg-neutral-950/80 px-2 py-1 rounded-md border border-neutral-850">
+            <span className="text-emerald-400">🚚</span>
+            <span className="truncate">
+              To <strong className="text-neutral-200">{currentSuburb.name}</strong>: {lowestCoverage ? lowestCoverage.estimatedTime : (lowestStore.deliverySpeed || "Next-Day")}
+            </span>
+          </div>
 
           <div className="mb-3 flex items-baseline justify-between">
             <div>
@@ -111,19 +124,16 @@ export default function ProductCard({ product, stores }: ProductCardProps) {
                 {formatZAR(lowestPrice)}
               </div>
             </div>
-            {maxSavings > 0 && (
-              <div className="text-right">
-                <span className="text-xs text-neutral-500 line-through mr-1.5">{formatZAR(highestPrice)}</span>
-                <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-800/60 px-1.5 py-0.5 rounded">
-                  Save {formatZAR(maxSavings)}
-                </span>
-              </div>
+            {lowestStore.loyaltyProgram && (
+              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                With {lowestStore.loyaltyProgram}
+              </span>
             )}
           </div>
-          
-          {/* Quick Store Price Preview */}
-          <div className="border-t border-neutral-800 pt-3 space-y-1.5">
-            <div className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider mb-1">
+
+          {/* Store Comparison List */}
+          <div className="space-y-1.5 pt-2 border-t border-neutral-800">
+            <div className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider">
               Top Compare Stores ({productStores.length})
             </div>
             

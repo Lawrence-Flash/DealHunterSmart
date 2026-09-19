@@ -1,5 +1,6 @@
-﻿import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { Product, Store } from "@shared/schema";
+import { SuburbLocation } from "./deliveryData";
 
 export interface BasketItem {
   product: Product;
@@ -16,6 +17,9 @@ export interface StoreBasketComparison {
   finalTotal: number;
   isComplete: boolean;
   missingProducts: string[];
+  isDeliveryAvailable: boolean;
+  deliverySpeed: string;
+  deliveryNote?: string;
 }
 
 export interface SmartSplitResult {
@@ -38,8 +42,8 @@ interface BasketContextType {
   removeItem: (productId: number) => void;
   updateQuantity: (productId: number, delta: number) => void;
   clearBasket: () => void;
-  computeStoreComparisons: (allStores: Store[]) => StoreBasketComparison[];
-  computeSmartSplit: (allStores: Store[]) => SmartSplitResult | null;
+  computeStoreComparisons: (allStores: Store[], suburb?: SuburbLocation) => StoreBasketComparison[];
+  computeSmartSplit: (allStores: Store[], suburb?: SuburbLocation) => SmartSplitResult | null;
 }
 
 const BasketContext = createContext<BasketContextType | undefined>(undefined);
@@ -103,17 +107,18 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   /**
-   * Computes totals across popular South African retailers for current basket items
+   * Computes totals across popular South African retailers for current basket items,
+   * factoring in destination suburb delivery availability and fee rules.
    */
-  const computeStoreComparisons = (allStores: Store[]): StoreBasketComparison[] => {
+  const computeStoreComparisons = (allStores: Store[], suburb?: SuburbLocation): StoreBasketComparison[] => {
     if (items.length === 0) return [];
 
     const targetRetailers = [
-      { name: "Checkers Sixty60", standardDelivery: 35.0 },
-      { name: "Pick n Pay asap!", standardDelivery: 35.0 },
-      { name: "Woolworths Dash", standardDelivery: 35.0 },
-      { name: "Makro", standardDelivery: 55.0 },
-      { name: "Takealot", standardDelivery: 0.0 }, // free over R500
+      { name: "Checkers Sixty60", key: "sixty60", fallbackFee: 35.0, defaultSpeed: "45 - 60 mins" },
+      { name: "Pick n Pay asap!", key: "asap", fallbackFee: 35.0, defaultSpeed: "40 - 55 mins" },
+      { name: "Woolworths Dash", key: "dash", fallbackFee: 35.0, defaultSpeed: "Same-Day / 60 mins" },
+      { name: "Takealot", key: "takealot", fallbackFee: 65.0, defaultSpeed: "Next-Day Delivery" },
+      { name: "Makro", key: "makro", fallbackFee: 70.0, defaultSpeed: "2 - 3 business days" },
     ];
 
     return targetRetailers.map((retailer) => {
@@ -138,10 +143,21 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
         }
       });
 
-      // Free shipping threshold for Takealot (over R500)
-      let deliveryFee = retailer.standardDelivery;
-      if (retailer.name === "Takealot" && subtotal < 500 && subtotal > 0) {
-        deliveryFee = 60.0;
+      // Suburb delivery lookup
+      const retailerInfo = suburb?.retailers[retailer.key];
+      const isDeliveryAvailable = retailerInfo ? retailerInfo.isAvailable : true;
+      const deliverySpeed = retailerInfo ? retailerInfo.estimatedTime : retailer.defaultSpeed;
+      const deliveryNote = retailerInfo?.notes;
+
+      let deliveryFee = retailerInfo ? retailerInfo.deliveryFee : retailer.fallbackFee;
+      
+      // Threshold rules (e.g. Takealot free over R500)
+      if (retailer.key === "takealot") {
+        if (subtotal >= 500) {
+          deliveryFee = 0.0;
+        } else if (subtotal > 0) {
+          deliveryFee = 65.0;
+        }
       }
 
       return {
@@ -150,15 +166,20 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
         totalItems: items.length,
         subtotal,
         loyaltySavings,
-        deliveryFee: itemsAvailable > 0 ? deliveryFee : 0,
-        finalTotal: itemsAvailable > 0 ? subtotal + deliveryFee : 0,
+        deliveryFee: itemsAvailable > 0 && isDeliveryAvailable ? deliveryFee : 0,
+        finalTotal: itemsAvailable > 0 ? subtotal + (isDeliveryAvailable ? deliveryFee : 0) : 0,
         isComplete: itemsAvailable === items.length,
         missingProducts,
+        isDeliveryAvailable,
+        deliverySpeed,
+        deliveryNote,
       };
     }).sort((a, b) => {
-      // Prioritize stores that have all items, then sort by lowest final total
+      // Prioritize stores that have all items, then available delivery, then lowest final total
       if (a.isComplete && !b.isComplete) return -1;
       if (!a.isComplete && b.isComplete) return 1;
+      if (a.isDeliveryAvailable && !b.isDeliveryAvailable) return -1;
+      if (!a.isDeliveryAvailable && b.isDeliveryAvailable) return 1;
       return a.finalTotal - b.finalTotal;
     });
   };
@@ -166,7 +187,7 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
   /**
    * Computes optimal 2-store split (e.g. Checkers Sixty60 + Pick n Pay asap!)
    */
-  const computeSmartSplit = (allStores: Store[]): SmartSplitResult | null => {
+  const computeSmartSplit = (allStores: Store[], suburb?: SuburbLocation): SmartSplitResult | null => {
     if (items.length < 2) return null;
 
     const store1Name = "Checkers Sixty60";
@@ -205,12 +226,14 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
 
-    const combinedDeliveryFees = 70.0; // R35 + R35
+    const fee1 = suburb?.retailers["sixty60"]?.deliveryFee ?? 35.0;
+    const fee2 = suburb?.retailers["asap"]?.deliveryFee ?? 35.0;
+    const combinedDeliveryFees = fee1 + fee2;
     const totalWithDelivery = store1Total + store2Total + combinedDeliveryFees;
 
     // Single store comparisons
-    const comparisons = computeStoreComparisons(allStores);
-    const completeComparisons = comparisons.filter((c) => c.isComplete);
+    const comparisons = computeStoreComparisons(allStores, suburb);
+    const completeComparisons = comparisons.filter((c) => c.isComplete && c.isDeliveryAvailable);
     if (completeComparisons.length === 0) return null;
 
     const singleCheapest = completeComparisons[0].finalTotal;

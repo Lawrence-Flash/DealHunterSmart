@@ -1,8 +1,9 @@
-﻿import React from "react";
+import React from "react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Store, Product } from "@shared/schema";
 import { useBasket } from "@/lib/basketContext";
+import { useDelivery } from "@/lib/deliveryContext";
 import { formatZAR, getStoreBrandTheme } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,6 +20,8 @@ export default function Basket() {
     addItem
   } = useBasket();
 
+  const { currentSuburb, openLocationModal } = useDelivery();
+
   const { data: stores = [] } = useQuery<Store[]>({
     queryKey: ['/api/stores'],
   });
@@ -27,8 +30,8 @@ export default function Basket() {
     queryKey: ['/api/products'],
   });
 
-  const storeComparisons = computeStoreComparisons(stores);
-  const smartSplit = computeSmartSplit(stores);
+  const storeComparisons = computeStoreComparisons(stores, currentSuburb);
+  const smartSplit = computeSmartSplit(stores, currentSuburb);
 
   // Quick staple suggestions if basket has few items
   const suggestedStaples = products.filter(
@@ -39,16 +42,18 @@ export default function Basket() {
   const handleWhatsAppShare = () => {
     if (items.length === 0) return;
 
-    const winningStore = storeComparisons.find((c) => c.isComplete) || storeComparisons[0];
+    const winningStore = storeComparisons.find((c) => c.isComplete && c.isDeliveryAvailable) || storeComparisons[0];
 
-    let message = `🛒 *My DealHunterSmart Grocery Run* 🇿🇦\n\n`;
+    let message = `🛒 *My DealHunterSmart Grocery Run* 🇿🇦\n`;
+    message += `📍 *Delivery Destination:* ${currentSuburb.name} (${currentSuburb.postalCode})\n\n`;
+
     if (winningStore) {
       message += `🏆 *Cheapest Single Store:* ${winningStore.storeName}\n`;
       message += `💰 *Items Total:* ${formatZAR(winningStore.subtotal)}\n`;
       if (winningStore.loyaltySavings > 0) {
         message += `💳 *Cardholder Savings:* ${formatZAR(winningStore.loyaltySavings)}\n`;
       }
-      message += `🚚 *Delivery Fee:* ${formatZAR(winningStore.deliveryFee)}\n`;
+      message += `🚚 *Delivery Fee:* ${formatZAR(winningStore.deliveryFee)} (${winningStore.deliverySpeed})\n`;
       message += `🏷️ *Final Total:* ${formatZAR(winningStore.finalTotal)}\n\n`;
     }
 
@@ -98,125 +103,124 @@ export default function Basket() {
 
         {items.length === 0 ? (
           /* Empty State */
-          <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-10 sm:p-16 text-center max-w-2xl mx-auto shadow-xl">
-            <div className="w-20 h-20 rounded-full bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-4xl mx-auto mb-5 shadow-lg">
-              🛒
-            </div>
-            <h2 className="text-2xl font-black text-white mb-2">
-              Your Grocery Basket is Empty
-            </h2>
-            <p className="text-neutral-400 text-sm max-w-md mx-auto mb-8 leading-relaxed">
-              Add everyday essentials like milk, bread, cooking oil, or braai meat packs to calculate which South African store will give you the cheapest checkout total.
+          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-12 text-center max-w-xl mx-auto my-12 shadow-2xl">
+            <div className="text-5xl mb-4">🛒</div>
+            <h2 className="text-xl font-bold text-white mb-2">Your Basket is Empty</h2>
+            <p className="text-neutral-400 text-xs sm:text-sm mb-6 leading-relaxed">
+              Add staple items like Clover Milk, Albany Bread, Tastic Rice, or Sunflower Oil to see real-time price comparisons across Checkers Sixty60, Pick n Pay asap!, and Woolworths Dash.
             </p>
 
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link href="/search?category=groceries">
+                <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-sm">
+                  Browse Everyday Essentials
+                </Button>
+              </Link>
+              <Link href="/delivery-checker">
+                <Button variant="outline" className="border-neutral-700 bg-neutral-900 text-neutral-200 hover:bg-neutral-800 text-xs font-bold">
+                  🚚 Check Suburb Delivery Coverage
+                </Button>
+              </Link>
+            </div>
+
+            {/* Quick Suggested Staples */}
             {suggestedStaples.length > 0 && (
-              <div className="text-left mb-8 pt-6 border-t border-neutral-800">
-                <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-3 text-center">
-                  Quick Add Popular South African Staples:
+              <div className="mt-8 pt-8 border-t border-neutral-800 text-left">
+                <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-3">
+                  Quick Add South African Staples:
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {suggestedStaples.map((staple) => (
                     <div
                       key={staple.id}
-                      className="flex items-center justify-between bg-neutral-950 p-3 rounded-xl border border-neutral-800 hover:border-emerald-500/50 transition"
+                      className="bg-neutral-950 p-3 rounded-xl border border-neutral-800 flex items-center justify-between"
                     >
-                      <div className="flex items-center space-x-3 truncate mr-2">
+                      <div className="flex items-center gap-2.5 truncate mr-2">
                         <img
                           src={staple.imageUrl}
                           alt={staple.name}
-                          className="w-10 h-10 rounded-lg object-cover bg-neutral-900 shrink-0"
+                          className="w-9 h-9 object-contain bg-neutral-900 rounded p-1"
                         />
                         <div className="truncate">
-                          <div className="font-bold text-white text-xs truncate">
-                            {staple.name}
-                          </div>
-                          <div className="text-[11px] text-neutral-500">
-                            {staple.brand} {staple.unit ? `• ${staple.unit}` : ''}
-                          </div>
+                          <div className="text-xs font-bold text-white truncate">{staple.name}</div>
+                          <div className="text-[10px] text-neutral-400">{staple.unit}</div>
                         </div>
                       </div>
-                      <Button
-                        size="sm"
+                      <button
                         onClick={() => addItem(staple)}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 h-auto shrink-0 cursor-pointer"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg shrink-0 cursor-pointer"
                       >
                         + Add
-                      </Button>
+                      </button>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-
-            <Link href="/">
-              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-8 py-3 rounded-xl shadow-md cursor-pointer">
-                Explore Deals on Home →
-              </Button>
-            </Link>
           </div>
         ) : (
-          /* Populated Basket Grid */
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left Column: Basket Line Items */}
-            <div className="lg:w-7/12 space-y-4">
-              <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-5 shadow-xl">
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-neutral-800">
-                  <h3 className="font-extrabold text-white text-base">
-                    Basket Items ({items.length})
-                  </h3>
-                  <span className="text-xs text-neutral-400">
-                    Adjust quantities or remove
-                  </span>
+          /* Active Basket Layout */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Column: Basket Items (7 cols) */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 shadow-xl">
+                <div className="flex items-center justify-between pb-3 border-b border-neutral-800 mb-4">
+                  <h2 className="font-extrabold text-white text-base">
+                    Basket Items ({totalCount})
+                  </h2>
+                  <Link href="/search?category=groceries" className="text-xs text-emerald-400 hover:text-emerald-300 font-bold transition">
+                    + Add More Items
+                  </Link>
                 </div>
 
-                <div className="space-y-3">
-                  {items.map(({ product, quantity }) => (
+                <div className="divide-y divide-neutral-850">
+                  {items.map((item) => (
                     <div
-                      key={product.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-neutral-950 rounded-xl border border-neutral-800 hover:border-neutral-700 transition"
+                      key={item.product.id}
+                      className="py-4 flex items-center justify-between gap-3"
                     >
-                      <div className="flex items-center space-x-3.5 mb-3 sm:mb-0">
+                      <div className="flex items-center gap-3 truncate">
                         <img
-                          src={product.imageUrl}
-                          alt={product.name}
-                          className="w-14 h-14 rounded-xl object-cover bg-neutral-900 shrink-0"
+                          src={item.product.imageUrl}
+                          alt={item.product.name}
+                          className="w-12 h-12 object-contain bg-neutral-950 rounded-lg p-1.5 border border-neutral-800 shrink-0"
                         />
-                        <div>
-                          <div className="font-bold text-white text-sm">
-                            {product.name}
-                          </div>
-                          <div className="text-xs text-neutral-400">
-                            {product.brand} {product.unit ? `• ${product.unit}` : ''}
+                        <div className="truncate">
+                          <Link href={`/product/${item.product.id}`}>
+                            <h3 className="text-sm font-bold text-white hover:text-emerald-400 transition truncate cursor-pointer">
+                              {item.product.name}
+                            </h3>
+                          </Link>
+                          <div className="text-[11px] text-neutral-400">
+                            {item.product.brand} {item.product.unit ? `• ${item.product.unit}` : ''}
                           </div>
                         </div>
                       </div>
 
-                      {/* Quantity Stepper & Remove */}
-                      <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-800">
-                        <div className="flex items-center bg-neutral-900 border border-neutral-800 rounded-lg p-1">
+                      <div className="flex items-center gap-4 shrink-0">
+                        {/* Quantity Buttons */}
+                        <div className="flex items-center border border-neutral-800 bg-neutral-950 rounded-xl overflow-hidden">
                           <button
-                            onClick={() => updateQuantity(product.id, -1)}
-                            className="w-7 h-7 flex items-center justify-center text-neutral-300 hover:text-white hover:bg-neutral-800 rounded font-bold text-sm transition cursor-pointer"
-                            aria-label="Decrease quantity"
+                            onClick={() => updateQuantity(item.product.id, -1)}
+                            className="px-2.5 py-1 text-xs text-neutral-300 hover:bg-neutral-800 hover:text-white font-black transition cursor-pointer"
                           >
                             -
                           </button>
-                          <span className="w-8 text-center text-xs font-bold text-white">
-                            {quantity}
+                          <span className="px-2 text-xs font-bold text-emerald-400">
+                            {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(product.id, 1)}
-                            className="w-7 h-7 flex items-center justify-center text-neutral-300 hover:text-white hover:bg-neutral-800 rounded font-bold text-sm transition cursor-pointer"
-                            aria-label="Increase quantity"
+                            onClick={() => updateQuantity(item.product.id, 1)}
+                            className="px-2.5 py-1 text-xs text-neutral-300 hover:bg-neutral-800 hover:text-white font-black transition cursor-pointer"
                           >
                             +
                           </button>
                         </div>
 
+                        {/* Remove item */}
                         <button
-                          onClick={() => removeItem(product.id)}
-                          className="w-8 h-8 rounded-lg bg-neutral-900 hover:bg-red-950/60 border border-neutral-800 hover:border-red-500/50 text-neutral-400 hover:text-red-400 flex items-center justify-center text-xs transition cursor-pointer"
-                          aria-label="Remove item"
+                          onClick={() => removeItem(item.product.id)}
+                          className="text-neutral-500 hover:text-red-400 text-xs transition cursor-pointer"
                           title="Remove item"
                         >
                           ✕
@@ -225,34 +229,34 @@ export default function Basket() {
                     </div>
                   ))}
                 </div>
-
-                {/* Quick Add Staple Pills */}
-                {suggestedStaples.length > 0 && (
-                  <div className="mt-5 pt-4 border-t border-neutral-800">
-                    <div className="text-xs font-bold text-neutral-400 mb-2">
-                      Add other essentials to your run:
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {suggestedStaples.map((staple) => (
-                        <button
-                          key={staple.id}
-                          onClick={() => addItem(staple)}
-                          className="text-xs bg-neutral-950 hover:bg-emerald-950/60 border border-neutral-800 hover:border-emerald-500/50 text-neutral-300 hover:text-emerald-300 px-3 py-1.5 rounded-full transition cursor-pointer flex items-center gap-1.5"
-                        >
-                          <span>+</span>
-                          <span>{staple.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Right Column: Multi-Store Comparison */}
-            <div className="lg:w-5/12 space-y-6">
-              {/* WhatsApp Share Action Banner */}
-              <div className="bg-gradient-to-r from-emerald-900/70 via-emerald-800/80 to-teal-900/70 border border-emerald-500/40 rounded-2xl p-5 shadow-xl text-white">
+            {/* Right Column: Multi-Store Comparison & Delivery Fees (5 cols) */}
+            <div className="lg:col-span-5 space-y-5">
+              {/* Delivery Suburb Indicator Banner */}
+              <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-emerald-400 text-lg">📍</span>
+                  <div>
+                    <div className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+                      Delivery Destination
+                    </div>
+                    <div className="text-xs font-black text-white">
+                      {currentSuburb.name} ({currentSuburb.postalCode}) • {currentSuburb.city}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={openLocationModal}
+                  className="text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-lg transition cursor-pointer"
+                >
+                  Change
+                </button>
+              </div>
+
+              {/* WhatsApp Share Card */}
+              <div className="bg-gradient-to-br from-emerald-950 via-neutral-900 to-neutral-900 border border-emerald-500/40 rounded-2xl p-5 shadow-xl">
                 <div className="flex items-center justify-between gap-4 mb-3">
                   <div>
                     <h3 className="font-extrabold text-sm sm:text-base text-white">
@@ -283,7 +287,7 @@ export default function Basket() {
                         Store Comparison
                       </h3>
                       <p className="text-xs text-neutral-400">
-                        Includes loyalty cards & delivery fees
+                        Includes loyalty cards & delivery to {currentSuburb.name}
                       </p>
                     </div>
                     <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded uppercase">
@@ -294,7 +298,7 @@ export default function Basket() {
                   <div className="space-y-3">
                     {storeComparisons.map((store, index) => {
                       const theme = getStoreBrandTheme(store.storeName);
-                      const isCheapest = index === 0 && store.isComplete;
+                      const isCheapest = index === 0 && store.isComplete && store.isDeliveryAvailable;
 
                       return (
                         <div
@@ -306,19 +310,25 @@ export default function Basket() {
                           }`}
                         >
                           <div className="flex items-start justify-between mb-2">
-                            <div className="flex items-center space-x-2">
-                              <span
-                                className="w-2.5 h-2.5 rounded-full"
-                                style={{ backgroundColor: theme.accentHex }}
-                              />
-                              <span className="font-bold text-white text-sm">
-                                {store.storeName}
-                              </span>
-                              {isCheapest && (
-                                <span className="bg-emerald-500 text-neutral-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                  Cheapest Run
+                            <div className="flex flex-col">
+                              <div className="flex items-center space-x-2">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full"
+                                  style={{ backgroundColor: theme.accentHex }}
+                                />
+                                <span className="font-bold text-white text-sm">
+                                  {store.storeName}
                                 </span>
-                              )}
+                                {isCheapest && (
+                                  <span className="bg-emerald-500 text-neutral-950 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                    Cheapest Run
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[11px] text-neutral-400 mt-0.5 flex items-center gap-1.5">
+                                <span className="text-emerald-400">🚚</span>
+                                <span>{store.deliverySpeed}</span>
+                              </div>
                             </div>
 
                             <div className="text-right">
@@ -344,9 +354,17 @@ export default function Basket() {
                             </div>
                             <div className="text-right">
                               <span className="block text-neutral-500 text-[10px]">Delivery Fee</span>
-                              <span className="font-semibold text-neutral-200">{formatZAR(store.deliveryFee)}</span>
+                              <span className="font-semibold text-neutral-200">
+                                {store.deliveryFee === 0 ? "FREE" : formatZAR(store.deliveryFee)}
+                              </span>
                             </div>
                           </div>
+
+                          {!store.isDeliveryAvailable && (
+                            <div className="mt-2 text-[10px] text-red-400 bg-red-950/40 p-1.5 rounded border border-red-500/30">
+                              ⚠️ Express on-demand not active in {currentSuburb.name} (Click & Collect or scheduled only).
+                            </div>
+                          )}
 
                           {!store.isComplete && (
                             <div className="mt-2 text-[10px] text-amber-400/90 italic">
@@ -374,7 +392,7 @@ export default function Basket() {
                   </div>
 
                   <p className="text-neutral-300 text-xs leading-relaxed mb-3">
-                    Even after paying two R35 delivery fees, splitting your order saves money:
+                    Even after paying two R35 delivery fees to {currentSuburb.name}, splitting your order saves money:
                   </p>
 
                   <div className="space-y-2 text-xs">

@@ -1,8 +1,9 @@
-﻿import express, { type Express, type Request, type Response } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { processAIChat } from "./aiAssistant";
 import { liveStoreScraper } from "./services/liveStoreScraper";
+import { ALL_SUBURBS } from "@shared/deliveryData";
 
 interface ServerAlert {
   id: string;
@@ -184,6 +185,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       recipient: contact,
       message: `[SIMULATED ${channel.toUpperCase()}] DealHunterSmart Price Drop Alert sent for product #${productId} with target R${targetPrice}`
     });
+  });
+
+  // South African Suburb & Delivery Availability endpoints
+  apiRouter.get('/delivery/suburbs', (req: Request, res: Response) => {
+    res.json(ALL_SUBURBS);
+  });
+
+  apiRouter.get('/delivery/coverage', (req: Request, res: Response) => {
+    const postalCode = req.query.postalCode as string;
+    const suburbName = (req.query.suburb as string || '').toLowerCase();
+
+    const match = ALL_SUBURBS.find((s) =>
+      (postalCode && s.postalCode === postalCode) ||
+      (suburbName && s.name.toLowerCase().includes(suburbName)) ||
+      (suburbName && s.city.toLowerCase().includes(suburbName))
+    ) || ALL_SUBURBS[0];
+
+    res.json(match);
   });
 
   const httpServer = createServer(app);
